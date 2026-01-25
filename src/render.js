@@ -1,8 +1,8 @@
 const RenderPosition = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
+  BEFOREBEGIN: 'beforebegin',//: до самого element (до открывающего тега).
+  AFTERBEGIN: 'afterbegin',//: сразу после открывающего тега element (перед первым потомком).
+  BEFOREEND: 'beforeend',//: сразу перед закрывающим тегом element (после последнего потомка).
+  AFTEREND: 'afterend',//: после element (после закрывающего тега).
 };
 
 function createElement(template) {
