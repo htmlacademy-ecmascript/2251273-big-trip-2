@@ -6,6 +6,8 @@ import EventPointAddView from '../view/event-point-add-view.js';
 
 import {render} from '../render.js';
 
+const MAX_POINTS = 3;
+
 export default class EventPresenter {
   eventSort = new EventSortView();
   eventList = new EventListView();
@@ -18,7 +20,7 @@ export default class EventPresenter {
     render(this.eventSort, this.eventContainer, 'AFTERBEGIN');
     render(this.eventList, this.eventContainer, 'BEFOREEND');
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < MAX_POINTS; i++) {
       render(new EventPointView(), this.eventList.getElement(), 'BEFOREEND');
     }
 
