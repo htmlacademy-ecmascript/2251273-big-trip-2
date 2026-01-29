@@ -11,6 +11,16 @@ const TYPE_OFFERS = [
         'id': 'c9638bad-89a2-40ec-b434-8f9750c3b701',
         'title': 'Upgrade to a business class 2 taxi',
         'price': 140
+      },
+      {
+        'id': '4211aede-c7a6-4a7b-b658-0615cb1ccc64',
+        'title': 'Upgrade to a business class taxi',
+        'price': 160
+      },
+      {
+        'id': 'c3c53dc6-ba11-44e6-90df-b88c06bfc399',
+        'title': 'Upgrade to a business class 2 taxi',
+        'price': 180
       }
     ]
   },
@@ -26,6 +36,11 @@ const TYPE_OFFERS = [
         'id': '96a9e77e-7831-4294-b214-9fc86c1f6850',
         'title': 'Upgrade to a business class bus',
         'price': 240
+      },
+      {
+        'id': '02890417-47d5-472e-b790-b15bda5b87ee',
+        'title': 'Upgrade to a business class bus',
+        'price': 220
       }
     ]
   },

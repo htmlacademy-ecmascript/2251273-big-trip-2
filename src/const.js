@@ -1,5 +1,5 @@
 const MAX_POINTS = 3;
-const TYPE_POINT = {
+const TypePoint = {
   'taxi': 'Taxi',
   'bus': 'Bus',
   'train': 'Train',
@@ -14,6 +14,7 @@ const TYPE_POINT = {
 const DateFormat = {
   eventDate:'MMM D',
   eventTime:'HH:mm',
+  eventGroupTime:'D/MM/YY HH:mm',
 };
 
-export {MAX_POINTS, TYPE_POINT, DateFormat};
+export {MAX_POINTS, TypePoint , DateFormat};

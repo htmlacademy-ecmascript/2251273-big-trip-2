@@ -12,19 +12,34 @@ export default class EventPresenter {
 
   constructor({eventContainer, eventsModel}) {
     this.eventContainer = eventContainer;
-    this.eventsModel = eventsModel;
+    this.eventsModel = eventsModel;//получаем модель
   }
 
+
   init() {
+    const allEvents = this.eventsModel.getEvents();
+
+    const eventEdit = this.eventsModel.getRandomEvent();
+    const eventDestination = this.eventsModel.getDestinationById(eventEdit.destination);
+    const eventOffers = this.eventsModel.getAllOffersByType(eventEdit.type);
+
     render(this.eventSort, this.eventContainer, 'AFTERBEGIN');
     render(this.eventList, this.eventContainer, 'BEFOREEND');
 
-    for (const event of this.eventsModel) {
-      render(new EventPointView({ event }), this.eventList.getElement(), 'BEFOREEND');
+    for (const event of allEvents) {
+      render(new EventPointView({
+        event: event,
+        destination: this.eventsModel.getDestinationById(event.destination),
+        offers: this.eventsModel.getCurrentOffers(event.type, event.offers)
+      }), this.eventList.getElement(), 'BEFOREEND');
     }
 
-    render(new EventPointEditView({event: this.eventsModel[0]}), this.eventList.getElement(), 'AFTERBEGIN');
-    // render(new EventPointAddView(), this.eventList.getElement(), 'AFTERBEGIN');
+    render(new EventPointEditView({
+      event: eventEdit,
+      destination: eventDestination,
+      offers: eventOffers
+    }), this.eventList.getElement(), 'AFTERBEGIN');
+    render(new EventPointAddView(), this.eventList.getElement(), 'AFTERBEGIN');
   }
 
 }

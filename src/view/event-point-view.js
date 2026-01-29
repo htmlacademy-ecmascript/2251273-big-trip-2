@@ -1,22 +1,15 @@
 import { createElement } from '../render.js';
-import { getDestinationPointById } from '../mock/destination.js';// ?
-import { getOffersByType } from '../mock/offers.js';// ?
 import { DateFormat } from '../const.js';
 import { humanizeDate, getTimeSpent } from './../utils.js';
 
-function createEventPoint(eventPoint) {
+function createEventPoint(eventPoint, destination, offers) {
   const eventType = eventPoint.type;
-  const eventSity = getDestinationPointById(eventPoint.destination).name;
+  const eventSity = destination.name;
   const eventDateFrom = humanizeDate(eventPoint.dateFrom, DateFormat.eventDate);
-  const eventStartTime = humanizeDate(eventPoint.dateFrom, DateFormat.eventTime);
-
-  const eventEndTime = humanizeDate(eventPoint.dateTo, DateFormat.eventTime);
-
+  const eventStartDate = humanizeDate(eventPoint.dateFrom, DateFormat.eventTime);
+  const eventEndDate = humanizeDate(eventPoint.dateTo, DateFormat.eventTime);
   const eventTimeSpent = getTimeSpent(eventPoint.dateFrom, eventPoint.dateTo);
-
-  const listSelectedOffers = eventPoint.offers;
-  const listAllOffers = getOffersByType(eventType);
-
+  const listCurrentOffers = offers;
 
   return (`
           <li class="trip-events__item">
@@ -28,9 +21,9 @@ function createEventPoint(eventPoint) {
                 <h3 class="event__title">${eventType} ${eventSity}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${eventPoint.dateFrom}">${eventStartTime}</time>
+                    <time class="event__start-time" datetime="${eventPoint.dateFrom}">${eventStartDate}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="${eventPoint.dateTo}">${eventEndTime}</time>
+                    <time class="event__end-time" datetime="${eventPoint.dateTo}">${eventEndDate}</time>
                   </p>
                   <p class="event__duration">${eventTimeSpent}</p>
                 </div>
@@ -39,10 +32,10 @@ function createEventPoint(eventPoint) {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                ${listSelectedOffers.map((offer) => `<li class="event__offer">
-                    <span class="event__offer-title">${listAllOffers.find((item) => item.id === offer).title}</span>
+                ${listCurrentOffers.map((offer) => `<li class="event__offer">
+                    <span class="event__offer-title">${offer.title}</span>
                     &plus;&euro;&nbsp;
-                    <span class="event__offer-price">${listAllOffers.find((item) => item.id === offer).price}</span>
+                    <span class="event__offer-price">${offer.price}</span>
                   </li>`).join('')}
                 </ul>
                 <button class="event__favorite-btn ${eventPoint.isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
@@ -60,12 +53,14 @@ function createEventPoint(eventPoint) {
 }
 
 export default class EventPointView {
-  constructor({event}) {
+  constructor({event, destination, offers}) {
     this.event = event;
+    this.destination = destination;
+    this.offers = offers;
   }
 
   getTemplate() {
-    return createEventPoint(this.event);
+    return createEventPoint(this.event, this.destination, this.offers);
   }
 
   getElement() {

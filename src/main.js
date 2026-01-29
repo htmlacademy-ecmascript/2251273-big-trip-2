@@ -23,7 +23,7 @@ const tripPresenter = new TripPresenter({
 });
 const eventPresenter = new EventPresenter({
   eventContainer: tripEvents,
-  eventsModel: eventsModel.getEvents(),
+  eventsModel: eventsModel,
 });
 tripPresenter.init();
 eventPresenter.init();
