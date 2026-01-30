@@ -1,5 +1,6 @@
 import TripPresenter from './presenter/trip-presenter.js';
 import EventPresenter from './presenter/event-presenter.js';
+import EventsModel from './model/events-model.js';
 
 // trip container
 const pageHeader = document.querySelector('.page-header');
@@ -11,6 +12,9 @@ const tripFilters = tripControls.querySelector('.trip-controls__filters');
 const pageMain = document.querySelector('.page-main');
 const pageMainContainer = pageMain.querySelector('.page-body__container');
 const tripEvents = pageMainContainer.querySelector('.trip-events');
+//event model
+const eventsModel = new EventsModel();
+eventsModel.init();
 
 // presenters
 const tripPresenter = new TripPresenter({
@@ -18,9 +22,8 @@ const tripPresenter = new TripPresenter({
   tripFilterContainer: tripFilters
 });
 const eventPresenter = new EventPresenter({
-  eventContainer: tripEvents
+  eventContainer: tripEvents,
+  eventsModel: eventsModel,
 });
-
-// presenters init
 tripPresenter.init();
 eventPresenter.init();
