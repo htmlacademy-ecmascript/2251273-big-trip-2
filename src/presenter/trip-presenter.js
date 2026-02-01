@@ -1,7 +1,7 @@
 import TripInfoView from '../view/trip-info-view.js';
 import TripFilterView from '../view/trip-filter-view.js';
 
-import {render} from '../render.js';
+import {render} from '../framework/render.js';
 
 export default class TripPresenter {
   tripInfo = new TripInfoView();

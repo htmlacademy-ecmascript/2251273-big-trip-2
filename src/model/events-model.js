@@ -3,32 +3,22 @@ import { getOffersByType } from '../mock/offers.js';
 import { getDestinationPointById } from '../mock/destination.js';
 
 export default class EventsModel {
+  #events = null;
+
   constructor() {
-    this.events = [];
+    this.#events = [];
   }
 
   init() {
-    this.events = getAllPoints();
+    this.#events = getAllPoints();
   }
 
-  getEvents() {
-    return this.events;
-  }
-
-  getRandomEvent() {
-    return this.events[Math.floor(Math.random() * this.events.length)];
-  }
-
-  getDestinationById(id) {
-    return getDestinationPointById(id);
-  }
-
-  getAllOffersByType(type) {
-    return getOffersByType(type);
-  }
-
-  getCurrentOffers(type, listOffersId) {
-    return getOffersByType(type).filter((offer) => listOffersId.includes(offer.id));
+  get allEvents() {
+    return this.#events.map((event) => ({
+      point: event,
+      destination: getDestinationPointById(event.destination),
+      offers: getOffersByType(event.type),
+    }));
   }
 
 }

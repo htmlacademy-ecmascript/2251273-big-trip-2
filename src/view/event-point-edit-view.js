@@ -1,4 +1,5 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
+
 import { humanizeDate } from './../utils.js';
 import { DateFormat, TypePoint } from '../const.js';
 
@@ -101,26 +102,23 @@ function createEventPointEdit(eventPoint, destination, offers) {
         `);
 }
 
-export default class EventPointEditView {
-  constructor({event, destination, offers}) {
+export default class EventPointEditView extends AbstractView {
+  constructor({event, destination, offers, onButtonClick, onSubmitForm, onDeleteClick}) {
+    super();
     this.event = event;
     this.destination = destination;
     this.offers = offers;
+    this.onButtonClick = onButtonClick;
+    this.onSubmitForm = onSubmitForm;
+    this.onDeleteClick = onDeleteClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.onButtonClick);
+    this.element.querySelector('.event').addEventListener('submit', this.onSubmitForm);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', onDeleteClick);
   }
 
-  getTemplate() {
+  get template() {
     return createEventPointEdit(this.event, this.destination, this.offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }

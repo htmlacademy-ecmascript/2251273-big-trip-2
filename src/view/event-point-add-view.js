@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view';
 
 function createEventPointAdd() {
   return (`
@@ -167,20 +167,17 @@ function createEventPointAdd() {
         `);
 }
 
-export default class EventPointAddView {
-  getTemplate() {
+export default class EventPointAddView extends AbstractView {
+
+  constructor({event, destination, offers}) {
+    super();
+    this.event = event;
+    this.destination = destination;
+    this.offers = offers;
+  }
+
+  get template() {
     return createEventPointAdd();
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }
