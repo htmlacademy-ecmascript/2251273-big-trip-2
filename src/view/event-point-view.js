@@ -1,15 +1,15 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 import { DateFormat } from '../const.js';
-import { humanizeDate, getTimeSpent } from './../utils.js';
+import { getFormettedDate, getDurationTime } from './../utils.js';
 
 function createEventPoint(eventPoint, destination, offers) {
   const eventType = eventPoint.type;
   const eventSity = destination.name;
-  const eventDateFrom = humanizeDate(eventPoint.dateFrom, DateFormat.eventDate);
-  const eventStartDate = humanizeDate(eventPoint.dateFrom, DateFormat.eventTime);
-  const eventEndDate = humanizeDate(eventPoint.dateTo, DateFormat.eventTime);
-  const eventTimeSpent = getTimeSpent(eventPoint.dateFrom, eventPoint.dateTo);
+  const eventDateFrom = getFormettedDate(eventPoint.dateFrom, DateFormat.eventDate);
+  const eventStartDate = getFormettedDate(eventPoint.dateFrom, DateFormat.eventTime);
+  const eventEndDate = getFormettedDate(eventPoint.dateTo, DateFormat.eventTime);
+  const eventTimeSpent = getDurationTime(eventPoint.dateFrom, eventPoint.dateTo);
   const listCurrentOffers = offers;
 
   return (`

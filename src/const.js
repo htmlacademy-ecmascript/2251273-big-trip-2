@@ -1,4 +1,5 @@
 const MAX_POINTS = 3;
+
 const TypePoint = {
   'taxi': 'Taxi',
   'bus': 'Bus',
@@ -17,4 +18,12 @@ const DateFormat = {
   eventGroupTime:'D/MM/YY HH:mm',
 };
 
-export {MAX_POINTS, TypePoint , DateFormat};
+const ALL_TYPES_FILTERS = [
+  'day',
+  'event',
+  'time',
+  'price',
+  'offer'
+];
+
+export { MAX_POINTS, TypePoint , DateFormat, ALL_TYPES_FILTERS };

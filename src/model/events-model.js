@@ -21,4 +21,13 @@ export default class EventsModel {
     }));
   }
 
+  get randomEvent() {
+    const event = this.#events[Math.floor(Math.random() * this.#events.length)];
+    return {
+      point: event,
+      destination: getDestinationPointById(event.destination),
+      offers: getOffersByType(event.type),
+    };
+  }
+
 }

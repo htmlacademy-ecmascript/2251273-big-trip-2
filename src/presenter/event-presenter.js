@@ -5,36 +5,46 @@ import EventPointEditView from '../view/event-point-edit-view.js';
 
 import { render, replace } from '../framework/render.js';
 import { isEscapeKey } from '../utils.js';
+import { ALL_TYPES_FILTERS } from '../const.js';
 
 export default class EventPresenter {
-  #eventSort = new EventSortView();
-  #eventList = new EventListView();
-
   #eventContainer = null;
   #eventsModel = null;
+  #eventSort = null;
+  #eventList = new EventListView();
 
   constructor({ eventContainer, eventsModel }) {
     this.#eventContainer = eventContainer;
     this.#eventsModel = eventsModel;
   }
 
+
   init() {
-    const allEvents = this.#eventsModel.allEvents;
-
     this.#renderListSort();
-
     this.#renderListEvent();
-    allEvents.forEach((event) => {
-      this.#renderEvent(event, 'BEFOREEND');
-    });
+    this.#renderAllEvents();
   }
 
   #renderListSort() {
+    this.#eventSort = new EventSortView({
+      allTypesFilters: ALL_TYPES_FILTERS,
+      onSortTypeChange: (evt) => {
+        evt.preventDefault();
+        // TODO: Обработать событие
+      }
+    });
+
     render(this.#eventSort, this.#eventContainer);
   }
 
   #renderListEvent() {
     render(this.#eventList, this.#eventContainer);
+  }
+
+  #renderAllEvents() {
+    this.allEvents.forEach((event) => {
+      this.#renderEvent(event, 'BEFOREEND');
+    });
   }
 
   #renderEvent(event, renderPosition = 'BEFOREEND') {
@@ -82,6 +92,10 @@ export default class EventPresenter {
     }
 
     render(eventPointComponent, this.#eventList.element, renderPosition);
+  }
+
+  get allEvents() {
+    return this.#eventsModel.allEvents;
   }
 
 }
