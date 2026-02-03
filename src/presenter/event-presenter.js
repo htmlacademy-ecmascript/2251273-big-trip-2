@@ -2,44 +2,86 @@ import EventSortView from '../view/event-sort-view.js';
 import EventListView from '../view/event-list-view.js';
 import EventPointView from '../view/event-point-view.js';
 import EventPointEditView from '../view/event-point-edit-view.js';
-import EventPointAddView from '../view/event-point-add-view.js';
 
-import {render} from '../render.js';
+import { render, replace } from '../framework/render.js';
+import { isEscapeKey } from '../utils.js';
 
 export default class EventPresenter {
-  eventSort = new EventSortView();
-  eventList = new EventListView();
+  #eventSort = new EventSortView();
+  #eventList = new EventListView();
 
-  constructor({eventContainer, eventsModel}) {
-    this.eventContainer = eventContainer;
-    this.eventsModel = eventsModel;//получаем модель
+  #eventContainer = null;
+  #eventsModel = null;
+
+  constructor({ eventContainer, eventsModel }) {
+    this.#eventContainer = eventContainer;
+    this.#eventsModel = eventsModel;
   }
 
-
   init() {
-    const allEvents = this.eventsModel.getEvents();
+    const allEvents = this.#eventsModel.allEvents;
 
-    const eventEdit = this.eventsModel.getRandomEvent();
-    const eventDestination = this.eventsModel.getDestinationById(eventEdit.destination);
-    const eventOffers = this.eventsModel.getAllOffersByType(eventEdit.type);
+    this.#renderListSort();
 
-    render(this.eventSort, this.eventContainer, 'AFTERBEGIN');
-    render(this.eventList, this.eventContainer, 'BEFOREEND');
+    this.#renderListEvent();
+    allEvents.forEach((event) => {
+      this.#renderEvent(event, 'BEFOREEND');
+    });
+  }
 
-    for (const event of allEvents) {
-      render(new EventPointView({
-        event: event,
-        destination: this.eventsModel.getDestinationById(event.destination),
-        offers: this.eventsModel.getCurrentOffers(event.type, event.offers)
-      }), this.eventList.getElement(), 'BEFOREEND');
+  #renderListSort() {
+    render(this.#eventSort, this.#eventContainer);
+  }
+
+  #renderListEvent() {
+    render(this.#eventList, this.#eventContainer);
+  }
+
+  #renderEvent(event, renderPosition = 'BEFOREEND') {
+    const documentKeydownHandler = (evt) => {
+      evt.preventDefault();
+      if (isEscapeKey(evt)) {
+        replaceEventToMinimizedComponent();
+        document.removeEventListener('keydown', documentKeydownHandler);
+      }
+    };
+
+    const eventPointComponent = new EventPointView({
+      event: event.point,
+      destination: event.destination,
+      offers: event.offers,
+      onButtonClick: () => {
+        replaceEventToMaximizedComponent();
+        document.addEventListener('keydown', documentKeydownHandler);
+      }
+    });
+
+    const eventPointEditComponent = new EventPointEditView({
+      event: event.point,
+      destination: event.destination,
+      offers: event.offers,
+      onButtonClick: () => {
+        replaceEventToMinimizedComponent();
+      },
+      onSubmitForm: (evt) => {
+        evt.preventDefault();
+        document.removeEventListener('keydown', documentKeydownHandler);
+      },
+      onDeleteClick: (evt) => {
+        evt.preventDefault();
+        document.removeEventListener('keydown', documentKeydownHandler);
+      }
+    });
+
+    function replaceEventToMaximizedComponent() {
+      replace(eventPointEditComponent, eventPointComponent);
     }
 
-    render(new EventPointEditView({
-      event: eventEdit,
-      destination: eventDestination,
-      offers: eventOffers
-    }), this.eventList.getElement(), 'AFTERBEGIN');
-    render(new EventPointAddView(), this.eventList.getElement(), 'AFTERBEGIN');
+    function replaceEventToMinimizedComponent() {
+      replace(eventPointComponent, eventPointEditComponent);
+    }
+
+    render(eventPointComponent, this.#eventList.element, renderPosition);
   }
 
 }
