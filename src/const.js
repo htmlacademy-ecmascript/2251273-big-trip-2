@@ -26,4 +26,11 @@ const ALL_TYPES_SORTING = [
   'offer'
 ];
 
-export { MAX_POINTS, TypePoint , DateFormat, ALL_TYPES_SORTING };
+const ALL_TYPES_FILTERS = [
+  'everything',
+  'future',
+  'present',
+  'past'
+];
+
+export { MAX_POINTS, TypePoint , DateFormat, ALL_TYPES_SORTING, ALL_TYPES_FILTERS };

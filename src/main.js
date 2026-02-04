@@ -19,7 +19,8 @@ eventsModel.init();
 // presenters
 const tripPresenter = new TripPresenter({
   tripInfoContainer: tripMain,
-  tripFilterContainer: tripFilters
+  tripFilterContainer: tripFilters,
+  eventsModel: eventsModel
 });
 const eventPresenter = new EventPresenter({
   eventContainer: tripEvents,
