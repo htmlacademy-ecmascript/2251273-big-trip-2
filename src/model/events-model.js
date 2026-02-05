@@ -21,4 +21,29 @@ export default class EventsModel {
     }));
   }
 
+  get randomEvent() {
+    const event = this.#events[Math.floor(Math.random() * this.#events.length)];
+    return {
+      point: event,
+      destination: getDestinationPointById(event.destination),
+      offers: getOffersByType(event.type),
+    };
+  }
+
+  get allCitiesEvents() {
+    return this.#events.map((event) => getDestinationPointById(event.destination).name);
+  }
+
+  get minEventsDate() {
+    return this.#events.map((event) => event.dateFrom).sort((a, b) => a - b)[0];
+  }
+
+  get maxEventsDate() {
+    return this.#events.map((event) => event.dateTo).sort((a, b) => b - a)[0];
+  }
+
+  get fullPrice() {
+    return this.#events.reduce((acc, event) => acc + event.basePrice, 0);
+  }
+
 }

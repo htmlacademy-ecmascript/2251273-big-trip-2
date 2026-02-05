@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-import { humanizeDate } from './../utils.js';
+import { getFormettedDate } from './../utils.js';
 import { DateFormat, TypePoint } from '../const.js';
 
 function createEventPointEdit(eventPoint, destination, offers) {
@@ -10,8 +10,8 @@ function createEventPointEdit(eventPoint, destination, offers) {
   const cityName = destinationPoint.name;
   const offersList = offers;
   const eventPicture = destinationPoint.pictures;
-  const eventStartDate = humanizeDate(event.dateFrom, DateFormat.eventGroupTime);
-  const eventEndDate = humanizeDate(event.dateTo, DateFormat.eventGroupTime);
+  const eventStartDate = getFormettedDate(event.dateFrom, DateFormat.eventGroupTime);
+  const eventEndDate = getFormettedDate(event.dateTo, DateFormat.eventGroupTime);
 
   return (`
             <li class="trip-events__item">
@@ -100,6 +100,7 @@ function createEventPointEdit(eventPoint, destination, offers) {
               </form>
             </li>
         `);
+
 }
 
 export default class EventPointEditView extends AbstractView {
