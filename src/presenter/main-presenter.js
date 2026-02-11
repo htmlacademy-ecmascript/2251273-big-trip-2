@@ -1,10 +1,10 @@
+import EventPresenter from './event-presenter.js';
+
 import EventSortView from '../view/event-sort-view.js';
 import EventListView from '../view/event-list-view.js';
-import EventPointView from '../view/event-point-view.js';
-import EventPointEditView from '../view/event-point-edit-view.js';
 
-import { render, replace } from '../framework/render.js';
-import { isEscapeKey } from '../utils.js';
+import { render } from '../framework/render.js';
+
 import { ALL_TYPES_SORTING } from '../const.js';
 
 export default class MainPresenter {
@@ -43,55 +43,11 @@ export default class MainPresenter {
 
   #renderAllEvents() {
     this.allEvents.forEach((event) => {
-      this.#renderEvent(event, 'BEFOREEND');
+      const eventPresentor = new EventPresenter({
+        eventListContainer: this.#eventList.element,
+      });
+      eventPresentor.init(event);
     });
-  }
-
-  #renderEvent(event, renderPosition = 'BEFOREEND') {
-    const documentKeydownHandler = (evt) => {
-      evt.preventDefault();
-      if (isEscapeKey(evt)) {
-        replaceEventToMinimizedComponent();
-        document.removeEventListener('keydown', documentKeydownHandler);
-      }
-    };
-
-    const eventPointComponent = new EventPointView({
-      event: event.point,
-      destination: event.destination,
-      offers: event.offers,
-      onButtonClick: () => {
-        replaceEventToMaximizedComponent();
-        document.addEventListener('keydown', documentKeydownHandler);
-      }
-    });
-
-    const eventPointEditComponent = new EventPointEditView({
-      event: event.point,
-      destination: event.destination,
-      offers: event.offers,
-      onButtonClick: () => {
-        replaceEventToMinimizedComponent();
-      },
-      onSubmitForm: (evt) => {
-        evt.preventDefault();
-        document.removeEventListener('keydown', documentKeydownHandler);
-      },
-      onDeleteClick: (evt) => {
-        evt.preventDefault();
-        document.removeEventListener('keydown', documentKeydownHandler);
-      }
-    });
-
-    function replaceEventToMaximizedComponent() {
-      replace(eventPointEditComponent, eventPointComponent);
-    }
-
-    function replaceEventToMinimizedComponent() {
-      replace(eventPointComponent, eventPointEditComponent);
-    }
-
-    render(eventPointComponent, this.#eventList.element, renderPosition);
   }
 
   get allEvents() {
