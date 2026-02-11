@@ -7,7 +7,7 @@ import { render, replace } from '../framework/render.js';
 import { isEscapeKey } from '../utils.js';
 import { ALL_TYPES_SORTING } from '../const.js';
 
-export default class EventPresenter {
+export default class MainPresenter {
   #eventContainer = null;
   #eventsModel = null;
   #eventSort = null;
