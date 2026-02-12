@@ -6,12 +6,15 @@ import EventListView from '../view/event-list-view.js';
 import { render } from '../framework/render.js';
 
 import { ALL_TYPES_SORTING } from '../const.js';
+import { updateItemInArray } from '../utils.js';
 
 export default class MainPresenter {
   #eventContainer = null;
   #eventsModel = null;
   #eventSort = null;
   #eventList = new EventListView();
+  #eventsList = [];
+  #eventsPresentor = new Map();
 
   constructor({ eventContainer, eventsModel }) {
     this.#eventContainer = eventContainer;
@@ -20,6 +23,7 @@ export default class MainPresenter {
 
 
   init() {
+    this.#eventsList = this.allEvents;
     this.#renderListSort();
     this.#renderListEvent();
     this.#renderAllEvents();
@@ -42,13 +46,21 @@ export default class MainPresenter {
   }
 
   #renderAllEvents() {
-    this.allEvents.forEach((event) => {
+    this.#eventsList.forEach((event) => {
       const eventPresentor = new EventPresenter({
         eventListContainer: this.#eventList.element,
+        onEventChange: this.#handleEventChange
       });
+      this.#eventsPresentor.set(event.point.id, eventPresentor);
       eventPresentor.init(event);
     });
   }
+
+  #handleEventChange = ({eventId, event}) => {
+    this.#eventsList = updateItemInArray(this.#eventsList, event);
+    this.#eventsPresentor.get(eventId).init(event);
+  };
+
 
   get allEvents() {
     return this.#eventsModel.allEvents;
