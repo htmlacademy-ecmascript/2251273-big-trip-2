@@ -2,18 +2,24 @@ import EventPointView from '../view/event-point-view.js';
 import EventPointEditView from '../view/event-point-edit-view.js';
 
 import { remove, render, replace } from '../framework/render.js';
+import { EVENT_MODE } from '../const.js';
 // import { isEscapeKey } from '../utils.js';
 
 export default class EventPresentor {
-  #event = null;
   #eventListContainer = null;
   #handleEventChange = null;
+  #handleModeChange = null;
+
   #eventComponent = null;
   #eventEditComponent = null;
 
-  constructor({eventListContainer, onEventChange}) {
+  #event = null;
+  #mode = EVENT_MODE.DEFAULT;
+
+  constructor({eventListContainer, onEventChange, onModeChange}) {
     this.#eventListContainer = eventListContainer;
     this.#handleEventChange = onEventChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(event) {
@@ -40,11 +46,16 @@ export default class EventPresentor {
     }
 
     if (this.#eventListContainer.contains(prevEventEditComponent.element)) {
-      replace(this.#eventEditComponent, prevEventEditComponent);
+      if (this.#mode === EVENT_MODE.EDITING) {
+        replace(this.#eventEditComponent, prevEventEditComponent);
+      }
+
     }
 
     if (this.#eventListContainer.contains(prevEventComponent.element)) {
-      replace(this.#eventComponent, prevEventComponent);
+      if (this.#mode === EVENT_MODE.DEFAULT) {
+        replace(this.#eventComponent, prevEventComponent);
+      }
     }
 
     remove(prevEventComponent);
@@ -53,10 +64,13 @@ export default class EventPresentor {
 
   #switchToForm() {
     replace(this.#eventEditComponent, this.#eventComponent);
+    this.#handleModeChange();
+    this.#mode = EVENT_MODE.EDITING;
   }
 
   #switchToCard() {
     replace(this.#eventComponent, this.#eventEditComponent);
+    this.#mode = EVENT_MODE.DEFAULT;
   }
 
   #handleSwitchToForm = () => {
@@ -74,5 +88,11 @@ export default class EventPresentor {
       event: {...this.#event, point: {...this.#event.point, isFavorite: !this.#event.point.isFavorite}}
     });
   };
+
+  resetView() {
+    if (this.#mode !== EVENT_MODE.DEFAULT) {
+      this.#switchToCard();
+    }
+  }
 
 }

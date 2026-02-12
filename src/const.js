@@ -33,4 +33,9 @@ const ALL_TYPES_FILTERS = [
   'past'
 ];
 
-export { MAX_POINTS, TypePoint , DateFormat, ALL_TYPES_SORTING, ALL_TYPES_FILTERS };
+const EVENT_MODE = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING'
+};
+
+export { MAX_POINTS, TypePoint , DateFormat, ALL_TYPES_SORTING, ALL_TYPES_FILTERS, EVENT_MODE };

@@ -49,7 +49,8 @@ export default class MainPresenter {
     this.#eventsList.forEach((event) => {
       const eventPresentor = new EventPresenter({
         eventListContainer: this.#eventList.element,
-        onEventChange: this.#handleEventChange
+        onEventChange: this.#handleEventChange,
+        onModeChange: this.#handleModeChange
       });
       this.#eventsPresentor.set(event.point.id, eventPresentor);
       eventPresentor.init(event);
@@ -59,6 +60,10 @@ export default class MainPresenter {
   #handleEventChange = ({eventId, event}) => {
     this.#eventsList = updateItemInArray(this.#eventsList, event);
     this.#eventsPresentor.get(eventId).init(event);
+  };
+
+  #handleModeChange = () => {
+    this.#eventsPresentor.forEach((eventPresentor) => eventPresentor.resetView());
   };
 
 
