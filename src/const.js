@@ -18,13 +18,28 @@ const DateFormat = {
   eventGroupTime:'D/MM/YY HH:mm',
 };
 
-const ALL_TYPES_SORTING = [
-  'day',
-  'event',
-  'time',
-  'price',
-  'offer'
-];
+const ALL_TYPES_SORTING = {
+  day: {
+    name: 'day',
+    availability: true
+  },
+  event: {
+    name: 'event',
+    availability: false
+  },
+  time: {
+    name: 'time',
+    availability: true
+  },
+  price: {
+    name: 'price',
+    availability: true
+  },
+  offer: {
+    name:'offer',
+    availability: false
+  }
+};
 
 const ALL_TYPES_FILTERS = [
   'everything',

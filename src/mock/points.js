@@ -16,7 +16,7 @@ const TRIP_POINTS = [
   {
     'id': 'bed2e3e7-901b-4a3e-9fa1-d69904d0222a',
     'basePrice': getRandomInt(0, 10000),
-    'dateFrom': '2020-02-12T22:55:56.845Z',
+    'dateFrom': '2020-02-21T22:55:56.845Z',
     'dateTo': '2020-02-22T11:22:13.375Z',
     'destination': '6c84adcd-9a22-4af2-a783-20d18a24c68b',
     'isFavorite': false,
@@ -29,8 +29,8 @@ const TRIP_POINTS = [
   {
     'id': '56266fee-b057-445e-96d4-83756a5e2407',
     'basePrice': getRandomInt(0, 10000),
-    'dateFrom': '2021-03-13T22:55:56.845Z',
-    'dateTo': '2021-03-23T11:22:13.375Z',
+    'dateFrom': '2021-03-22T22:55:56.845Z',
+    'dateTo': '2021-03-23T10:22:13.375Z',
     'destination': '84e5879f-d376-4cb4-aabe-f40f02215d82',
     'isFavorite': true,
     'offers': [],
@@ -63,7 +63,7 @@ const TRIP_POINTS = [
   {
     'id': 'c5fedbbe-d709-429b-a54f-091ab95c1ea6',
     'basePrice': getRandomInt(0, 10000),
-    'dateFrom': '2024-06-16T22:55:56.845Z',
+    'dateFrom': '2024-06-20T22:55:56.845Z',
     'dateTo': '2024-06-26T11:22:13.375Z',
     'destination': 'af9bdb03-b807-4f6e-92a5-999ec0779776',
     'isFavorite': false,
@@ -75,7 +75,7 @@ const TRIP_POINTS = [
   {
     'id': '617eb02d-384a-4123-b292-ab720da3fa1c',
     'basePrice': getRandomInt(0, 10000),
-    'dateFrom': '2025-07-17T02:55:56.845Z',
+    'dateFrom': '2025-07-18T02:55:56.845Z',
     'dateTo': '2025-07-27T11:22:13.375Z',
     'destination': '919d787e-9728-43f6-b3d7-1c7149148d37',
     'isFavorite': true,

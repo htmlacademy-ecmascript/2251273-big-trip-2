@@ -1,21 +1,22 @@
 import EventPresenter from './event-presenter.js';
+import SortPresenter from './sort-presenter.js';
 
-import EventSortView from '../view/event-sort-view.js';
 import EventListView from '../view/event-list-view.js';
 
 import { render } from '../framework/render.js';
 
-import { ALL_TYPES_SORTING } from '../const.js';
-import { updateItemInArray } from '../utils.js';
+import { updateItemInArray, sortEventsByType } from '../utils.js';
 
 export default class MainPresenter {
   #eventContainer = null;
   #eventsModel = null;
 
-  #eventSort = null;
   #eventList = new EventListView();
   #eventsList = [];
+  #sortEventsList = [];
   #eventsPresentor = new Map();
+  #sortPresenter = null;
+  #currentSortType = 'day';
 
   constructor({ eventContainer, eventsModel }) {
     this.#eventContainer = eventContainer;
@@ -25,21 +26,12 @@ export default class MainPresenter {
   // Инициализируем презентер
   init() {
     this.#eventsList = this.allEvents;
-    this.#renderListSort();
+
+    this.#renderSortEvent();
+
     this.#renderListEvent();
-    this.#renderAllEvents();
-  }
 
-  #renderListSort() {
-    this.#eventSort = new EventSortView({
-      allTypesSorting: ALL_TYPES_SORTING,
-      onSortTypeChange: (evt) => {
-        evt.preventDefault();
-        // TODO: Обработать событие
-      }
-    });
-
-    render(this.#eventSort, this.#eventContainer);
+    this.#renderAllEvents(this.#eventsList);
   }
 
   // Отрисовываем список событий
@@ -48,8 +40,8 @@ export default class MainPresenter {
   }
 
   // Отрисовываем все события
-  #renderAllEvents() {
-    this.#eventsList.forEach((event) => {
+  #renderAllEvents(eventsList = this.#eventsList) {
+    eventsList.forEach((event) => {
       const eventPresentor = new EventPresenter({
         eventListContainer: this.#eventList.element,
         onEventChange: this.#handleEventChange,
@@ -59,6 +51,16 @@ export default class MainPresenter {
       this.#eventsPresentor.set(event.point.id, eventPresentor);
       eventPresentor.init(event);
     });
+  }
+
+  // Отрисовываем сортировку
+  #renderSortEvent() {
+    this.#sortPresenter = new SortPresenter({
+      sortListContainer: this.#eventList.element,
+      onSortChange: this.#handleSortChange
+    });
+    this.#sortPresenter.init();
+
   }
 
   // Обновляем событие (перерисовываем его)
@@ -74,6 +76,27 @@ export default class MainPresenter {
 
   #handleEventSave = () => {
     // TODO: Обработать сохранение события
+  };
+
+  #handleSortChange = ({sortType}) => {
+
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#currentSortType = sortType;
+
+    if (this.#currentSortType === 'day') {
+      this.#clearEvents();
+      this.#renderAllEvents(this.#eventsList);
+    } else {
+      this.#clearEvents();
+      this.#renderAllEvents(sortEventsByType(structuredClone(this.#eventsList), sortType));
+    }
+  };
+
+  #clearEvents = () => {
+    this.#eventsPresentor.forEach((eventPresentor) => eventPresentor.destroy());
+    this.#eventsPresentor.clear();
   };
 
   // Получаем все события из модели
