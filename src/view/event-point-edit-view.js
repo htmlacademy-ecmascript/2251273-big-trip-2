@@ -104,18 +104,14 @@ function createEventPointEdit(eventPoint, destination, offers) {
 }
 
 export default class EventPointEditView extends AbstractView {
-  constructor({event, destination, offers, onButtonClick, onSubmitForm, onDeleteClick}) {
+  constructor({event, onSwitchToCard}) {
     super();
-    this.event = event;
-    this.destination = destination;
-    this.offers = offers;
-    this.onButtonClick = onButtonClick;
-    this.onSubmitForm = onSubmitForm;
-    this.onDeleteClick = onDeleteClick;
+    this.event = event.point;
+    this.destination = event.destination;
+    this.offers = event.offers;
+    this.onSwitchToCard = onSwitchToCard;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.onButtonClick);
-    this.element.querySelector('.event').addEventListener('submit', this.onSubmitForm);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', onDeleteClick);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.onSwitchToCard);
   }
 
   get template() {

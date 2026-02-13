@@ -1,101 +1,98 @@
-import EventSortView from '../view/event-sort-view.js';
-import EventListView from '../view/event-list-view.js';
 import EventPointView from '../view/event-point-view.js';
 import EventPointEditView from '../view/event-point-edit-view.js';
 
-import { render, replace } from '../framework/render.js';
-import { isEscapeKey } from '../utils.js';
-import { ALL_TYPES_SORTING } from '../const.js';
+import { remove, render, replace } from '../framework/render.js';
+import { EVENT_MODE } from '../const.js';
+// import { isEscapeKey } from '../utils.js';
 
-export default class EventPresenter {
-  #eventContainer = null;
-  #eventsModel = null;
-  #eventSort = null;
-  #eventList = new EventListView();
+export default class EventPresentor {
+  #eventListContainer = null;
+  #handleEventChange = null;
+  #handleModeChange = null;
 
-  constructor({ eventContainer, eventsModel }) {
-    this.#eventContainer = eventContainer;
-    this.#eventsModel = eventsModel;
+  #eventComponent = null;
+  #eventEditComponent = null;
+
+  #event = null;
+  #mode = EVENT_MODE.DEFAULT;
+
+  constructor({eventListContainer, onEventChange, onModeChange}) {
+    this.#eventListContainer = eventListContainer;
+    this.#handleEventChange = onEventChange;
+    this.#handleModeChange = onModeChange;
   }
 
+  init(event) {
+    this.#event = event;
 
-  init() {
-    this.#renderListSort();
-    this.#renderListEvent();
-    this.#renderAllEvents();
-  }
+    const prevEventComponent = this.#eventComponent;
+    const prevEventEditComponent = this.#eventEditComponent;
 
-  #renderListSort() {
-    this.#eventSort = new EventSortView({
-      allTypesSorting: ALL_TYPES_SORTING,
-      onSortTypeChange: (evt) => {
-        evt.preventDefault();
-        // TODO: Обработать событие
-      }
+    this.#eventComponent = new EventPointView({
+      event : this.#event,
+      onSwitchToForm: this.#handleSwitchToForm,
+      onFavoriteClick: this.#handleFavoriteClick
+    }
+    );
+
+    this.#eventEditComponent = new EventPointEditView({
+      event: this.#event,
+      onSwitchToCard: this.#handleSwitchToCard,
     });
 
-    render(this.#eventSort, this.#eventContainer);
-  }
-
-  #renderListEvent() {
-    render(this.#eventList, this.#eventContainer);
-  }
-
-  #renderAllEvents() {
-    this.allEvents.forEach((event) => {
-      this.#renderEvent(event, 'BEFOREEND');
-    });
-  }
-
-  #renderEvent(event, renderPosition = 'BEFOREEND') {
-    const documentKeydownHandler = (evt) => {
-      evt.preventDefault();
-      if (isEscapeKey(evt)) {
-        replaceEventToMinimizedComponent();
-        document.removeEventListener('keydown', documentKeydownHandler);
-      }
-    };
-
-    const eventPointComponent = new EventPointView({
-      event: event.point,
-      destination: event.destination,
-      offers: event.offers,
-      onButtonClick: () => {
-        replaceEventToMaximizedComponent();
-        document.addEventListener('keydown', documentKeydownHandler);
-      }
-    });
-
-    const eventPointEditComponent = new EventPointEditView({
-      event: event.point,
-      destination: event.destination,
-      offers: event.offers,
-      onButtonClick: () => {
-        replaceEventToMinimizedComponent();
-      },
-      onSubmitForm: (evt) => {
-        evt.preventDefault();
-        document.removeEventListener('keydown', documentKeydownHandler);
-      },
-      onDeleteClick: (evt) => {
-        evt.preventDefault();
-        document.removeEventListener('keydown', documentKeydownHandler);
-      }
-    });
-
-    function replaceEventToMaximizedComponent() {
-      replace(eventPointEditComponent, eventPointComponent);
+    if (prevEventComponent === null || prevEventEditComponent === null) {
+      render(this.#eventComponent, this.#eventListContainer);
+      return;
     }
 
-    function replaceEventToMinimizedComponent() {
-      replace(eventPointComponent, eventPointEditComponent);
+    if (this.#eventListContainer.contains(prevEventEditComponent.element)) {
+      if (this.#mode === EVENT_MODE.EDITING) {
+        replace(this.#eventEditComponent, prevEventEditComponent);
+      }
+
     }
 
-    render(eventPointComponent, this.#eventList.element, renderPosition);
+    if (this.#eventListContainer.contains(prevEventComponent.element)) {
+      if (this.#mode === EVENT_MODE.DEFAULT) {
+        replace(this.#eventComponent, prevEventComponent);
+      }
+    }
+
+    remove(prevEventComponent);
+    remove(prevEventEditComponent);
   }
 
-  get allEvents() {
-    return this.#eventsModel.allEvents;
+  #switchToForm() {
+    replace(this.#eventEditComponent, this.#eventComponent);
+    this.#handleModeChange();
+    this.#mode = EVENT_MODE.EDITING;
+  }
+
+  #switchToCard() {
+    replace(this.#eventComponent, this.#eventEditComponent);
+    this.#mode = EVENT_MODE.DEFAULT;
+  }
+
+  #handleSwitchToForm = () => {
+    this.#switchToForm();
+  };
+
+  #handleSwitchToCard = () => {
+    this.#switchToCard();
+  };
+
+  #handleFavoriteClick = () => {
+    const eventId = this.#event.point.id;
+    this.#handleEventChange({
+      eventId,
+      event: {...this.#event, point: {...this.#event.point, isFavorite: !this.#event.point.isFavorite}}
+    });
+  };
+
+  resetView() {
+    if (this.#mode !== EVENT_MODE.DEFAULT) {
+      this.#switchToCard();
+    }
   }
 
 }

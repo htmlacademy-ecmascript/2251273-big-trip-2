@@ -50,4 +50,15 @@ function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
-export { getFormettedDate, getDurationTime, getRandomInt, isEscapeKey };
+/**
+ * Updates the item in the given array with the given update.
+ * The update item is found by its id and replaced with the new item.
+ * @param {array} array - Array containing the item to be updated.
+ * @param {object} update - Item to be updated.
+ * @returns {array} Updated array.
+ */
+function updateItemInArray(array, update) {
+  return array.map((item) => (item.id === update.id ? update : item));
+}
+
+export { getFormettedDate, getDurationTime, getRandomInt, isEscapeKey, updateItemInArray };

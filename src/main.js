@@ -1,5 +1,5 @@
 import TripPresenter from './presenter/trip-presenter.js';
-import EventPresenter from './presenter/event-presenter.js';
+import MainPresenter from './presenter/main-presenter.js';
 import EventsModel from './model/events-model.js';
 
 // trip container
@@ -22,9 +22,9 @@ const tripPresenter = new TripPresenter({
   tripFilterContainer: tripFilters,
   eventsModel: eventsModel
 });
-const eventPresenter = new EventPresenter({
+const mainPresenter = new MainPresenter({
   eventContainer: tripEvents,
   eventsModel: eventsModel,
 });
 tripPresenter.init();
-eventPresenter.init();
+mainPresenter.init();
