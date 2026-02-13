@@ -11,6 +11,7 @@ import { updateItemInArray } from '../utils.js';
 export default class MainPresenter {
   #eventContainer = null;
   #eventsModel = null;
+
   #eventSort = null;
   #eventList = new EventListView();
   #eventsList = [];
@@ -21,7 +22,7 @@ export default class MainPresenter {
     this.#eventsModel = eventsModel;
   }
 
-
+  // Инициализируем презентер
   init() {
     this.#eventsList = this.allEvents;
     this.#renderListSort();
@@ -41,32 +42,41 @@ export default class MainPresenter {
     render(this.#eventSort, this.#eventContainer);
   }
 
+  // Отрисовываем список событий
   #renderListEvent() {
     render(this.#eventList, this.#eventContainer);
   }
 
+  // Отрисовываем все события
   #renderAllEvents() {
     this.#eventsList.forEach((event) => {
       const eventPresentor = new EventPresenter({
         eventListContainer: this.#eventList.element,
         onEventChange: this.#handleEventChange,
-        onModeChange: this.#handleModeChange
+        onModeChange: this.#handleModeChange,
+        onEventSave: this.#handleEventSave,
       });
       this.#eventsPresentor.set(event.point.id, eventPresentor);
       eventPresentor.init(event);
     });
   }
 
+  // Обновляем событие (перерисовываем его)
   #handleEventChange = ({eventId, event}) => {
     this.#eventsList = updateItemInArray(this.#eventsList, event);
     this.#eventsPresentor.get(eventId).init(event);
   };
 
+  // Сбрасываем режим редактирования
   #handleModeChange = () => {
     this.#eventsPresentor.forEach((eventPresentor) => eventPresentor.resetView());
   };
 
+  #handleEventSave = () => {
+    // TODO: Обработать сохранение события
+  };
 
+  // Получаем все события из модели
   get allEvents() {
     return this.#eventsModel.allEvents;
   }
