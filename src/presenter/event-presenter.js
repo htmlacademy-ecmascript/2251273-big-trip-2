@@ -9,6 +9,7 @@ export default class EventPresentor {
   #eventListContainer = null;
   #handleEventChange = null;
   #handleModeChange = null;
+  #handleEventSave = null;
 
   #eventComponent = null;
   #eventEditComponent = null;
@@ -16,10 +17,11 @@ export default class EventPresentor {
   #event = null;
   #mode = EVENT_MODE.DEFAULT;
 
-  constructor({eventListContainer, onEventChange, onModeChange}) {
+  constructor({eventListContainer, onEventChange, onModeChange, onEventSave}) {
     this.#eventListContainer = eventListContainer;
     this.#handleEventChange = onEventChange;
     this.#handleModeChange = onModeChange;
+    this.#handleEventSave = onEventSave;
   }
 
   init(event) {
@@ -38,6 +40,8 @@ export default class EventPresentor {
     this.#eventEditComponent = new EventPointEditView({
       event: this.#event,
       onSwitchToCard: this.#handleSwitchToCard,
+      onSubmitForm: this.#handleFormSubmit,
+      onResetForm: this.#handleFormReset,
     });
 
     if (prevEventComponent === null || prevEventEditComponent === null) {
@@ -45,17 +49,12 @@ export default class EventPresentor {
       return;
     }
 
-    if (this.#eventListContainer.contains(prevEventEditComponent.element)) {
-      if (this.#mode === EVENT_MODE.EDITING) {
-        replace(this.#eventEditComponent, prevEventEditComponent);
-      }
-
+    if (this.#mode === EVENT_MODE.EDITING) {
+      replace(this.#eventEditComponent, prevEventEditComponent);
     }
 
-    if (this.#eventListContainer.contains(prevEventComponent.element)) {
-      if (this.#mode === EVENT_MODE.DEFAULT) {
-        replace(this.#eventComponent, prevEventComponent);
-      }
+    if (this.#mode === EVENT_MODE.DEFAULT) {
+      replace(this.#eventComponent, prevEventComponent);
     }
 
     remove(prevEventComponent);
@@ -89,10 +88,26 @@ export default class EventPresentor {
     });
   };
 
+  #handleFormSubmit = (evt) => {
+    evt.preventDefault();
+    this.#handleEventSave();
+    // TODO: Реализовать отправку формы
+  };
+
+  #handleFormReset = (evt) => {
+    evt.preventDefault();
+    // TODO: Реализовать отправку формы
+  };
+
   resetView() {
     if (this.#mode !== EVENT_MODE.DEFAULT) {
       this.#switchToCard();
     }
+  }
+
+  destroy() {
+    remove(this.#eventComponent);
+    remove(this.#eventEditComponent);
   }
 
 }

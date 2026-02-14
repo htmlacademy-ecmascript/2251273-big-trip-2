@@ -61,4 +61,13 @@ function updateItemInArray(array, update) {
   return array.map((item) => (item.id === update.id ? update : item));
 }
 
-export { getFormettedDate, getDurationTime, getRandomInt, isEscapeKey, updateItemInArray };
+function sortEventsByType(events, type) {
+  if (type === 'price') {
+    return events.sort((a, b) => b.point.basePrice - a.point.basePrice);
+  } else if (type === 'time') {
+    return events.sort((a, b) => dayjs(b.point.dateTo).diff(dayjs(b.point.dateFrom)) - dayjs(a.point.dateTo).diff(dayjs(a.point.dateFrom)));
+  }
+  return events;
+}
+
+export { getFormettedDate, getDurationTime, getRandomInt, isEscapeKey, updateItemInArray,sortEventsByType };
