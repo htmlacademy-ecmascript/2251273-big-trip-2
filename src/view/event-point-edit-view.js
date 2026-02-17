@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
-import { getFormettedDate, addOfferInArray, deleteOfferInArray } from './../utils.js';
+import { getFormettedDate, addOfferInArray, deleteOfferInArray} from './../utils.js';
 import { DateFormat, TypePoint } from '../const.js';
 
 function crateEventTypeList({eventType}) {
@@ -18,7 +18,7 @@ function crateEventTypeList({eventType}) {
 
                         ${Object.keys(TypePoint).map((key) => `
                         <div class="event__type-item">
-                          <input id="event-type-${key}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${key}">
+                          <input id="event-type-${key}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${key}" data-type="${key}" ${key === eventType ? 'checked' : ''}>
                           <label class="event__type-label  event__type-label--${key}" for="event-type-${key}-1">${TypePoint[key]}</label>
                         </div>
                           `).join('')}
@@ -171,17 +171,33 @@ export default class EventPointEditView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onSwitchToCard);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      this._setState(this.#event);
+      this.#updateState(this._setState);
+      this.#onSwitchToCard();
+    });
+
     this.element.querySelector('.event').addEventListener('submit', (evt) => {
       evt.preventDefault();
       this.#onSubmitForm({eventId: this._state.point.id, event: this._state});
     });
+
     this.element.querySelector('.event').addEventListener('reset', this.#onDeleteForm);
+
+    //TODO: исправить на один обработчик
     this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
       checkbox.addEventListener('change', (evt) => {
         this.#updadeOffersEvent({offerId: evt.target.dataset.offerId, checked: evt.target.checked});
       });
     });
+
+    //TODO: исправить на один обработчик
+    this.element.querySelectorAll('.event__type-input').forEach((radio) => {
+      radio.addEventListener('change', () => {
+        this.#choiceTypePoint({newEventType: radio.dataset.type});
+      });
+    });
+
   }
 
   #updadeOffersEvent = ({offerId, checked}) => {
@@ -192,5 +208,12 @@ export default class EventPointEditView extends AbstractStatefulView {
     }
   };
 
+  #choiceTypePoint = ({newEventType}) => {
+    this.#updateState({point: {...this._state.point, type: newEventType}});
+  };
+
+  #updateState = (update) => {
+    this.updateElement(update);
+  };
 
 }

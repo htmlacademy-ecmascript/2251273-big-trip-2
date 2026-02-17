@@ -1,5 +1,3 @@
-import { getRandomInt } from './../utils.js';
-
 const DESTINATION_POINTS = [
   {
     'id': 'd519dd4f-8442-42cd-adbe-d0644e341604',
