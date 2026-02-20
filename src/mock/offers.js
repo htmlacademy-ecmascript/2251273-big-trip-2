@@ -1,6 +1,6 @@
 import { getRandomInt } from '../utils.js';
 
-const TYPE_OFFERS = [
+const OFFERS = [
   {
     'type': 'taxi',
     'offers': [
@@ -116,8 +116,8 @@ const TYPE_OFFERS = [
   }
 ];
 
-function getOffersByType(type) {
-  return TYPE_OFFERS.find((offer) => offer.type === type).offers;
+function getAllOffers() {
+  return OFFERS;
 }
 
-export {TYPE_OFFERS, getOffersByType};
+export { getAllOffers };

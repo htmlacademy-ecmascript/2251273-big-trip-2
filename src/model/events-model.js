@@ -1,6 +1,4 @@
-import { getAllPoints } from '../mock/points.js';
-import { getOffersByType } from '../mock/offers.js';
-import { getDestinationPointById } from '../mock/destination.js';
+import { getAllEvents } from '../mock/events.js';
 
 export default class EventsModel {
   #events = null;
@@ -10,19 +8,15 @@ export default class EventsModel {
   }
 
   init() {
-    this.#events = getAllPoints();
+    this.#events = getAllEvents();
+  }
+
+  getEventById(id) {
+    return this.#events.find((event) => event.id === id) || null;
   }
 
   get allEvents() {
-    return this.#events.map((event) => ({
-      point: event,
-      destination: getDestinationPointById(event.destination),
-      offers: getOffersByType(event.type),
-    }));
-  }
-
-  get allCitiesEvents() {
-    return this.#events.map((event) => getDestinationPointById(event.destination).name);
+    return this.#events;
   }
 
 }

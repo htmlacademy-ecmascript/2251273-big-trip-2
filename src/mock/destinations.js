@@ -1,4 +1,4 @@
-const DESTINATION_POINTS = [
+const DESTINATIONS = [
   {
     'id': 'd519dd4f-8442-42cd-adbe-d0644e341604',
     'description': 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus.',
@@ -142,8 +142,7 @@ const DESTINATION_POINTS = [
   }
 ];
 
-function getDestinationPointById(id) {
-  return DESTINATION_POINTS.find((point) => point.id === id);
+function getAllDestinations() {
+  return DESTINATIONS;
 }
-
-export {DESTINATION_POINTS, getDestinationPointById};
+export { getAllDestinations };

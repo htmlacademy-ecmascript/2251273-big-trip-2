@@ -150,70 +150,88 @@ function createEventPointEdit(event) {
 export default class EventPointEditView extends AbstractStatefulView {
   #event = null;
 
+  #eventId = null;
+  #offers = null;
+  #destination = null;
+
   #onSwitchToCard = null;
   #onSubmitForm = null;
   #onDeleteForm = null;
 
-  constructor({event, onSwitchToCard, onSubmitForm, onDeleteForm}) {
+  constructor({
+    event,
+    // eventsModel,
+    offersModel,
+    destinationsModel,
+    onSwitchToCard,
+    onSubmitForm,
+    onDeleteForm,
+  }) {
     super();
     this.#event = event;
-    this._setState(this.#event);
+    // this.#event = eventsModel.getEventById(this.#eventId);
+    this.#offers = offersModel.getOfferByType(this.#event);
+    this.#destination = destinationsModel.getDestinationById(this.#event.destination);
+    // console.log(this.#event);
 
-    this.#onSwitchToCard = onSwitchToCard;
-    this.#onSubmitForm = onSubmitForm;
-    this.#onDeleteForm = onDeleteForm;
+    // this._setState({event: this.#event, offers: this.#offers, destination: this.#destination});
+    // console.log(this._state);
 
-    this._restoreHandlers();
+    // this.#onSwitchToCard = onSwitchToCard;
+    // this.#onSubmitForm = onSubmitForm;
+    // this.#onDeleteForm = onDeleteForm;
+
+    // this._restoreHandlers();
   }
 
   get template() {
-    return createEventPointEdit(this._state);
+    // return createEventPointEdit(this._state);
   }
 
   _restoreHandlers() {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
       this._setState(this.#event);
-      this.#updateState(this._setState);
+      // this.#updateState(this._setState);
       this.#onSwitchToCard();
     });
 
-    this.element.querySelector('.event').addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      this.#onSubmitForm({eventId: this._state.point.id, event: this._state});
-    });
+    // this.element.querySelector('.event').addEventListener('submit', (evt) => {
+    //   evt.preventDefault();
+    //   this.#onSubmitForm({eventId: this._state.point.id, event: this._state});
+    // });
 
-    this.element.querySelector('.event').addEventListener('reset', this.#onDeleteForm);
-
-    //TODO: исправить на один обработчик
-    this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
-      checkbox.addEventListener('change', (evt) => {
-        this.#updadeOffersEvent({offerId: evt.target.dataset.offerId, checked: evt.target.checked});
-      });
-    });
+    // this.element.querySelector('.event').addEventListener('reset', this.#onDeleteForm);
 
     //TODO: исправить на один обработчик
-    this.element.querySelectorAll('.event__type-input').forEach((radio) => {
-      radio.addEventListener('change', () => {
-        this.#choiceTypePoint({newEventType: radio.dataset.type});
-      });
-    });
+    // this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
+    //   checkbox.addEventListener('change', (evt) => {
+    //     this.#updadeOffersEvent({offerId: evt.target.dataset.offerId, checked: evt.target.checked});
+    //   });
+    // });
+
+    //TODO: исправить на один обработчик
+    // this.element.querySelectorAll('.event__type-input').forEach((radio) => {
+    //   radio.addEventListener('change', () => {
+    //     this.#choiceTypePoint({newEventType: radio.dataset.type});
+    //   });
+    // });
 
   }
 
-  #updadeOffersEvent = ({offerId, checked}) => {
-    if (checked) {
-      this._state.point.offers = addOfferInArray(this._state.point.offers, offerId);
-    } else {
-      this._state.point.offers = deleteOfferInArray(this._state.point.offers, offerId);
-    }
-  };
+  // #updadeOffersEvent = ({offerId, checked}) => {
+  //   if (checked) {
+  //     this._state.point.offers = addOfferInArray(this._state.point.offers, offerId);
+  //   } else {
+  //     this._state.point.offers = deleteOfferInArray(this._state.point.offers, offerId);
+  //   }
+  // };
 
-  #choiceTypePoint = ({newEventType}) => {
-    this.#updateState({point: {...this._state.point, type: newEventType}});
-  };
+  // #choiceTypePoint = ({newEventType}) => {
+  //   this.#updateState({point: {...this._state.point, type: newEventType}});
+  // };
 
-  #updateState = (update) => {
-    this.updateElement(update);
-  };
+  // #updateState = (update) => {
+  //   this.updateElement(update);
+  // };
 
 }

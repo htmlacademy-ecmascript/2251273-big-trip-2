@@ -1,6 +1,6 @@
 import { getRandomInt } from '../utils.js';
 
-const TRIP_POINTS = [
+const EVENTS = [
   {
     'id': 'f0fc5afc-42a2-4bb0-af11-6fed54b48d96',
     'basePrice': getRandomInt(0, 10000),
@@ -106,8 +106,8 @@ const TRIP_POINTS = [
   }
 ];
 
-function getAllPoints() {
-  return TRIP_POINTS;
+function getAllEvents() {
+  return EVENTS;
 }
 
-export {getAllPoints};
+export { getAllEvents };

@@ -54,19 +54,30 @@ function createEventPoint(eventPoint, destination, offers) {
 }
 
 export default class EventPointView extends AbstractView {
-  constructor({event, onSwitchToForm, onFavoriteClick}) {
-    super();
-    this.event = event.point;
-    this.destination = event.destination;
-    this.offers = event.offers;
-    this.onSwitchToForm = onSwitchToForm;
-    this.onFavoriteClick = onFavoriteClick;
+  #event = null;
+  #destination = null;
+  #offers = null;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.onSwitchToForm);
+  constructor({
+    event,
+    // eventsModel,
+    offersModel,
+    destinationsModel,
+    onSwitchToForm,
+    onFavoriteClick,
+  }) {
+    super();
+    this.#event = event;
+    // this.#event = eventsModel.getEventById(this.#eventId);
+    this.#offers = offersModel.getOfferByType(this.#event);
+    this.#destination = destinationsModel.getDestinationById(this.#event.destination);
+    // this.onSwitchToForm = onSwitchToForm;
+    this.onFavoriteClick = onFavoriteClick;
+    // this.element.querySelector('.event__rollup-btn').addEventListener('click', this.onSwitchToForm);
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.onFavoriteClick);
   }
 
   get template() {
-    return createEventPoint(this.event, this.destination, this.offers);
+    return createEventPoint(this.#event, this.#destination, this.#offers);
   }
 }

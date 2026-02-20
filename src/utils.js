@@ -58,7 +58,7 @@ function isEscapeKey(evt) {
  * @returns {array} Updated array of events.
  */
 function updateEventInArray(array, element) {
-  return array.map((item) => (item.point.id === element.point.id ? element : item));
+  return array.map((item) => item.id === element.id ? element : item);
 }
 
 
