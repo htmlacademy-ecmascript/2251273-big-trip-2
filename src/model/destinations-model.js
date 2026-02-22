@@ -15,8 +15,11 @@ export default class EventsModel {
     return this.#destinations.find((destination) => destination.id === id || null);
   }
 
-  // get allDestinations() {
-  //   return this.#destinations;
-  // }
+  getIdByName(name) {
+    return this.#destinations.find((destination) => destination.name === name).id || null;
+  }
 
+  get allCities() {
+    return this.#destinations.map((item) => item.name);
+  }
 }

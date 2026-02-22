@@ -3,12 +3,13 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getFormettedDate, addOfferInArray, deleteOfferInArray} from './../utils.js';
 import { DateFormat, TypePoint } from '../const.js';
 
-function crateEventTypeList({eventType}) {
+function crateEventTypeList({ event, destinationsModel }) {
+  const allCities = destinationsModel.allCities;
   return (`
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType}.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${event.type}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -18,7 +19,7 @@ function crateEventTypeList({eventType}) {
 
                         ${Object.keys(TypePoint).map((key) => `
                         <div class="event__type-item">
-                          <input id="event-type-${key}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${key}" data-type="${key}" ${key === eventType ? 'checked' : ''}>
+                          <input id="event-type-${key}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${key}" data-type="${key}" ${key === event.type ? 'checked' : ''}>
                           <label class="event__type-label  event__type-label--${key}" for="event-type-${key}-1">${TypePoint[key]}</label>
                         </div>
                           `).join('')}
@@ -27,13 +28,11 @@ function crateEventTypeList({eventType}) {
                   </div>
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                      ${TypePoint[eventType]}
+                      ${TypePoint[event.type]}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationsModel.getDestinationById(event.destination).name}" list="destination-list-1">
                     <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+                    ${allCities.map((city) => `<option value="${city}"></option>`).join('')}
                     </datalist>
                   </div>
 `);
@@ -68,7 +67,7 @@ function createEventOffersList({allOffers, eventOffers}) {
 }
 
 function createEventDestination({eventDescription, eventPicture}) {
-  if (!eventDescription || !eventPicture.length) {
+  if (!eventDescription || !eventPicture) {
     return '';
   } else {
     return (`
@@ -113,8 +112,8 @@ function createEventPointEdit({
   offersModel,
   destinationsModel
 }) {
+  // console.log(event);
 
-  const eventType = event.type;
   const eventStartDate = getFormettedDate(event.dateFrom, DateFormat.eventGroupTime);
   const eventEndDate = getFormettedDate(event.dateTo, DateFormat.eventGroupTime);
   const eventPrice = event.basePrice;
@@ -124,16 +123,15 @@ function createEventPointEdit({
   const destination = destinationsModel.getDestinationById(event.destination);
 
   const eventDescription = destination.description;
-
   const eventPicture = destination.pictures;
 
   return (`
             <li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
-                  ${crateEventTypeList({eventType})}
-                  ${createEventDate({eventStartDate, eventEndDate})}
-                  ${createEventPrice({eventPrice})}
+                  ${crateEventTypeList({ event, destinationsModel })}
+                  ${createEventDate({ eventStartDate, eventEndDate })}
+                  ${createEventPrice({ eventPrice })}
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">Delete</button>
                   <button class="event__rollup-btn" type="button">
@@ -162,7 +160,6 @@ export default class EventPointEditView extends AbstractStatefulView {
 
   constructor({
     event,
-    // eventsModel,
     offersModel,
     destinationsModel,
     onSwitchToCard,
@@ -215,6 +212,16 @@ export default class EventPointEditView extends AbstractStatefulView {
       radio.addEventListener('change', () => {
         this.#choiceTypePoint(radio.dataset.type);
       });
+    });
+
+    this.element.querySelector('.event__input--destination').addEventListener('click', () => {
+      this.element.querySelector('.event__input--destination').value = '';
+    });
+
+    this.element.querySelector('.event__input--destination').addEventListener('change', () => {
+      const value = this.element.querySelector('.event__input--destination').value;
+      this._state.destination = this.#destinationsModel.getIdByName(value);
+      this.#updateState();
     });
 
   }

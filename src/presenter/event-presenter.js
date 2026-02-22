@@ -5,18 +5,17 @@ import { remove, render, replace } from '../framework/render.js';
 import { EVENT_MODE } from '../const.js';
 
 export default class EventPresentor {
-  //
+  // Containers
   #eventListContainer = null;
-  //
-  #eventsModel = null;
+  // Models
   #offersModel = null;
   #destinationsModel = null;
-  //
+  // Handlers
   #handleEventChange = null;
   #handleModeChange = null;
   #handleEventSave = null;
   #handleEventDelete = null;
-
+  // Components
   #eventComponent = null;
   #eventEditComponent = null;
 
@@ -25,7 +24,6 @@ export default class EventPresentor {
 
   constructor({
     eventListContainer,
-    eventsModel,
     offersModel,
     destinationsModel,
     onEventChange,
@@ -35,7 +33,6 @@ export default class EventPresentor {
   }) {
     //
     this.#eventListContainer = eventListContainer;
-    this.#eventsModel = eventsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleEventChange = onEventChange;
@@ -74,7 +71,6 @@ export default class EventPresentor {
   #createEventComponent() {
     return new EventPointView({
       event: this.#event,
-      // eventsModel: this.#eventsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onSwitchToForm: this.#handleSwitchToForm,
@@ -86,7 +82,6 @@ export default class EventPresentor {
   #createEventEditComponent() {
     return new EventPointEditView({
       event: this.#event,
-      // eventsModel: this.#eventsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onSwitchToCard: this.#handleSwitchToCard,

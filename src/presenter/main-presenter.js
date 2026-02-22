@@ -15,9 +15,8 @@ export default class MainPresenter {
   #eventsModel = null;
   #offersModel = null;
   #destinationsModel = null;
-  //
+  // Temp
   #eventsListLocalStorage = [];
-  // #sortEventsList = [];
   #eventsPresentor = new Map();
   #sortPresenter = null;
   #currentSortType = 'day';
@@ -36,15 +35,14 @@ export default class MainPresenter {
 
   // Инициализируем презентер
   init() {
-    //
+    // Init models
     this.#eventsModel.init();
     this.#offersModel.init();
     this.#destinationsModel.init();
-    //
+
     this.#saveEventInLocalStorage(this.#eventsModel.allEvents);
 
     this.#renderSortEvent();
-
     this.#renderEventsListContainer();
     this.#renderAllEvents(this.#eventsListLocalStorage);
   }
@@ -58,13 +56,13 @@ export default class MainPresenter {
   #renderAllEvents(eventsList = this.#eventsListLocalStorage) {
     eventsList.forEach((event) => {
       const eventPresentor = new EventPresenter({
-        //
+        // Containers
         eventListContainer: this.#eventListContainer.element,
-        //
+        // Models
         eventsModel: this.#eventsModel,
         offersModel: this.#offersModel,
         destinationsModel: this.#destinationsModel,
-        //
+        // Handlers
         onEventChange: this.#handleEventChange,
         onModeChange: this.#handleModeChange,
         onEventSave: this.#handleEventSave,
@@ -128,6 +126,7 @@ export default class MainPresenter {
     this.#eventsPresentor.clear();
   };
 
+  // localStorage
   #updateEventInLocalStorage = (event) => {
     this.#eventsListLocalStorage = updateEventInArray(this.#eventsListLocalStorage, event);
   };

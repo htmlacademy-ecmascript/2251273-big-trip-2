@@ -15,8 +15,4 @@ export default class EventsModel {
     return this.#offers.find((offer) => offer.type === type).offers || null;
   }
 
-  // get allOffers() {
-  //   return this.#offers;
-  // }
-
 }

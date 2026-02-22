@@ -64,7 +64,6 @@ export default class EventPointView extends AbstractView {
 
   constructor({
     event,
-    // eventsModel,
     offersModel,
     destinationsModel,
     onSwitchToForm,
