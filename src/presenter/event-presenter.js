@@ -60,12 +60,23 @@ export default class EventPresentor {
       replace(updatedEventComponent, this.#eventComponent);
     } else {
       replace(updatedEventEditComponent, this.#eventEditComponent);
-      this.#eventEditComponent = updatedEventEditComponent;
     }
 
     this.#eventComponent = updatedEventComponent;
     this.#eventEditComponent = updatedEventEditComponent;
 
+  }
+
+  resetView() {
+    if (this.#mode !== EVENT_MODE.DEFAULT) {
+      this.update(this.#event);
+      this.#switchToCard();
+    }
+  }
+
+  destroy() {
+    remove(this.#eventComponent);
+    remove(this.#eventEditComponent);
   }
 
   #createEventComponent() {
@@ -123,16 +134,5 @@ export default class EventPresentor {
   #handleFormDelete = () => {
     this.#handleEventDelete({event: this.#event});
   };
-
-  resetView() {
-    if (this.#mode !== EVENT_MODE.DEFAULT) {
-      this.#switchToCard();
-    }
-  }
-
-  destroy() {
-    remove(this.#eventComponent);
-    remove(this.#eventEditComponent);
-  }
 
 }
