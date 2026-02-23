@@ -127,6 +127,7 @@ export default class EventPresentor {
   resetView() {
     if (this.#mode !== EVENT_MODE.DEFAULT) {
       this.#switchToCard();
+      this.update(this.#event);
     }
   }
 
