@@ -3,6 +3,10 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getFormettedDate, addOfferInArray, deleteOfferInArray} from './../utils.js';
 import { DateFormat, TypePoint } from '../const.js';
 
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
+
 function crateEventTypeList({ event, destinationsModel }) {
   const allCities = destinationsModel.allCities;
   return (`
@@ -158,6 +162,9 @@ export default class EventPointEditView extends AbstractStatefulView {
   #onSubmitForm = null;
   #onDeleteForm = null;
 
+  #dateFrom = null;
+  #dateTo = null;
+
   constructor({
     event,
     offersModel,
@@ -224,6 +231,9 @@ export default class EventPointEditView extends AbstractStatefulView {
       this.#updateState();
     });
 
+    this.#setDateFrom();
+    this.#setDateTo();
+
   }
 
   #updadeOffersEvent = (offerId, checked) => {
@@ -241,6 +251,40 @@ export default class EventPointEditView extends AbstractStatefulView {
 
   #updateState = () => {
     this.updateElement(this._state);
+  };
+
+  #setDateFrom = () => {
+    if (this._state.dateFrom) {
+      this.#dateFrom = flatpickr(this.element.querySelector('#event-start-time-1'), {
+        enableTime: true,
+        defaultDate: this._state.dateFrom,
+        dateFormat: 'd/m/y H:i',
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler,
+      });
+    }
+  };
+
+  #setDateTo = () => {
+    if (this._state.dateTo) {
+      this.#dateTo = flatpickr(this.element.querySelector('#event-end-time-1'), {
+        enableTime: true,
+        defaultDate: this._state.dateTo,
+        dateFormat: 'd/m/y H:i',
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler,
+      });
+    }
+  };
+
+  #dateFromChangeHandler = (userDate) => {
+    this._state.dateFrom = userDate.at(0);
+    this.#updateState();
+  };
+
+  #dateToChangeHandler = (userDate) => {
+    this._state.dateTo = userDate.at(0);
+    this.#updateState();
   };
 
 }
