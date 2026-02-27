@@ -204,7 +204,7 @@ export default class EventPointEditView extends AbstractStatefulView {
 
     this.element.querySelector('.event').addEventListener('submit', (evt) => {
       evt.preventDefault();
-      this.#onSubmitForm(this._state);
+      this.#onSubmitForm({event:this._state});
     });
 
     this.element.querySelector('.event').addEventListener('reset', this.#onDeleteForm);

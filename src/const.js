@@ -53,4 +53,25 @@ const EVENT_MODE = {
   EDITING: 'EDITING'
 };
 
-export { MAX_POINTS, TypePoint , DateFormat, ALL_TYPES_SORTING, ALL_TYPES_FILTERS, EVENT_MODE };
+const USER_ACTION = {
+  UPDATE_TASK: 'UPDATE',
+  ADD_TASK: 'ADD',
+  DELETE_TASK: 'DELETE',
+};
+
+const UPDATE_TYPE = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export {
+  MAX_POINTS,
+  TypePoint,
+  DateFormat,
+  ALL_TYPES_SORTING,
+  ALL_TYPES_FILTERS,
+  EVENT_MODE,
+  USER_ACTION,
+  UPDATE_TYPE
+};

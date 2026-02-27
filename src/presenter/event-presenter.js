@@ -2,7 +2,7 @@ import EventPointView from '../view/event-point-view.js';
 import EventPointEditView from '../view/event-point-edit-view.js';
 
 import { remove, render, replace } from '../framework/render.js';
-import { EVENT_MODE } from '../const.js';
+import { EVENT_MODE, USER_ACTION, UPDATE_TYPE} from '../const.js';
 
 export default class EventPresentor {
   // Containers
@@ -13,8 +13,6 @@ export default class EventPresentor {
   // Handlers
   #handleEventChange = null;
   #handleModeChange = null;
-  #handleEventSave = null;
-  #handleEventDelete = null;
   // Components
   #eventComponent = null;
   #eventEditComponent = null;
@@ -26,19 +24,15 @@ export default class EventPresentor {
     eventListContainer,
     offersModel,
     destinationsModel,
-    onEventChange,
+    onDataChange,
     onModeChange,
-    onEventSave,
-    onEventDelete
   }) {
-    //
     this.#eventListContainer = eventListContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
-    this.#handleEventChange = onEventChange;
+
+    this.#handleEventChange = onDataChange;
     this.#handleModeChange = onModeChange;
-    this.#handleEventSave = onEventSave;
-    this.#handleEventDelete = onEventDelete;
   }
 
   init(event) {
@@ -62,10 +56,8 @@ export default class EventPresentor {
       replace(updatedEventEditComponent, this.#eventEditComponent);
       this.#eventEditComponent = updatedEventEditComponent;
     }
-
     this.#eventComponent = updatedEventComponent;
     this.#eventEditComponent = updatedEventEditComponent;
-
   }
 
   #createEventComponent() {
@@ -111,17 +103,31 @@ export default class EventPresentor {
   };
 
   #handleFavoriteClick = () => {
+
     this.#event.isFavorite = !this.#event.isFavorite;
-    this.#handleEventChange(this.#event);
+
+    this.#handleEventChange({
+      actionType: USER_ACTION.UPDATE_TASK,
+      updateType: UPDATE_TYPE.PATCH,
+      update: this.#event
+    });
   };
 
-  #handleFormSubmit = (event) => {
-    this.#handleEventSave(event);
+  #handleFormSubmit = ({event}) => {
+    this.#handleEventChange({
+      actionType: USER_ACTION.UPDATE_TASK,
+      updateType: UPDATE_TYPE.MINOR,
+      update: event
+    });
     this.#handleSwitchToCard();
   };
 
   #handleFormDelete = () => {
-    this.#handleEventDelete({event: this.#event});
+    this.#handleEventChange({
+      actionType: USER_ACTION.DELETE_TASK,
+      updateType: UPDATE_TYPE.MINOR,
+      update: this.#event
+    });
   };
 
   resetView() {
