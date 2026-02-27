@@ -1,9 +1,12 @@
+import Observable from '../framework/observable.js';
 import { getAllEvents } from '../mock/events.js';
 
-export default class EventsModel {
+
+export default class EventsModel extends Observable {
   #events = null;
 
   constructor() {
+    super();
     this.#events = [];
   }
 
@@ -18,5 +21,4 @@ export default class EventsModel {
   get allEvents() {
     return this.#events;
   }
-
 }
