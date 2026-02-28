@@ -65,6 +65,17 @@ const UPDATE_TYPE = {
   MAJOR: 'MAJOR',
 };
 
+const NEW_EVENT = {
+  'id': null,
+  'basePrice': 0,
+  'dateFrom': null,
+  'dateTo': null,
+  'destination': null,
+  'isFavorite': false,
+  'offers': [],
+  'type': 'flight'
+};
+
 export {
   MAX_POINTS,
   TypePoint,
@@ -73,5 +84,6 @@ export {
   ALL_TYPES_FILTERS,
   EVENT_MODE,
   USER_ACTION,
-  UPDATE_TYPE
+  UPDATE_TYPE,
+  NEW_EVENT
 };

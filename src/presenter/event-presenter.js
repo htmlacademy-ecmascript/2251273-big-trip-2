@@ -1,8 +1,9 @@
 import EventPointView from '../view/event-point-view.js';
 import EventPointEditView from '../view/event-point-edit-view.js';
+import EventPointAddView from '../view/event-point-add-view.js';
 
 import { remove, render, replace } from '../framework/render.js';
-import { EVENT_MODE, USER_ACTION, UPDATE_TYPE} from '../const.js';
+import { EVENT_MODE, USER_ACTION, UPDATE_TYPE } from '../const.js';
 
 export default class EventPresentor {
   // Containers
@@ -60,6 +61,16 @@ export default class EventPresentor {
     this.#eventEditComponent = updatedEventEditComponent;
   }
 
+  add(event) {
+    const newEvent = new EventPointAddView({
+      event: event,
+      destinationsModel: this.#destinationsModel,
+      offersModel: this.#offersModel
+    });
+
+    render(newEvent, this.#eventListContainer, 'AFTERBEGIN');
+  }
+
   #createEventComponent() {
     return new EventPointView({
       event: this.#event,
@@ -113,7 +124,7 @@ export default class EventPresentor {
     });
   };
 
-  #handleFormSubmit = ({event}) => {
+  #handleFormSubmit = ({ event }) => {
     this.#handleEventChange({
       actionType: USER_ACTION.UPDATE_TASK,
       updateType: UPDATE_TYPE.MINOR,

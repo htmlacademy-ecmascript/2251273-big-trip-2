@@ -6,7 +6,7 @@ import EventListView from '../view/event-list-view.js';
 import { render } from '../framework/render.js';
 
 import { sortEventsByType, } from '../utils.js';
-import { USER_ACTION, UPDATE_TYPE } from '../const.js';
+import { USER_ACTION, UPDATE_TYPE, NEW_EVENT } from '../const.js';
 
 export default class MainPresenter {
   #eventListContainer = new EventListView();
@@ -35,7 +35,7 @@ export default class MainPresenter {
     this.#eventsModel.addObserver(this.#handleModelEvent);
   }
 
-  #handleViewAction = ({actionType, updateType, update}) => {
+  #handleViewAction = ({ actionType, updateType, update }) => {
     // console.log({actionType, updateType, update});
     // console.log(actionType, updateType, update);
     // Здесь будем вызывать обновление модели.
@@ -76,6 +76,8 @@ export default class MainPresenter {
     this.#renderSortEvent();
     this.#renderEventsListContainer();
     this.#renderAllEvents(this.events);
+
+    this.#handleNewEventClick();
   }
 
   // Отрисовываем список событий
@@ -83,23 +85,45 @@ export default class MainPresenter {
     render(this.#eventListContainer, this.#eventContainer);
   }
 
+  #handleNewEventClick() {
+    const newEventButton = document.querySelector('.trip-main__event-add-btn');
+    newEventButton.addEventListener('click', () => {
+      this.#createNewEvent();
+    });
+  }
+
+  #createNewEvent(event = NEW_EVENT) {
+    const eventPresentor = this.#createEventPresentor();
+    eventPresentor.add(event);
+  }
+
   // Отрисовываем все события
   #renderAllEvents(eventsList = this.events) {
     eventsList.forEach((event) => {
-      const eventPresentor = new EventPresenter({
-        // Containers
-        eventListContainer: this.#eventListContainer.element,
-        // Models
-        eventsModel: this.#eventsModel,
-        offersModel: this.#offersModel,
-        destinationsModel: this.#destinationsModel,
-        // Handlers
-        onDataChange: this.#handleViewAction,
-        onModeChange: this.#handleModeChange,
-      });
-      this.#eventsPresentor.set(event.id, eventPresentor);
-      eventPresentor.init(event);
+      this.#renderEvent(event);
     });
+  }
+
+  #renderEvent(event) {
+    const eventPresentor = this.#createEventPresentor();
+
+    this.#eventsPresentor.set(event.id, eventPresentor);
+    eventPresentor.init(event);
+  }
+
+  #createEventPresentor() {
+    const eventPresentor = new EventPresenter({
+      // Containers
+      eventListContainer: this.#eventListContainer.element,
+      // Models
+      eventsModel: this.#eventsModel,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+      // Handlers
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#handleModeChange,
+    });
+    return eventPresentor;
   }
 
   // Отрисовываем сортировку
@@ -116,7 +140,7 @@ export default class MainPresenter {
     this.#eventsPresentor.forEach((eventPresentor) => eventPresentor.resetView());
   };
 
-  #handleSortChange = ({sortType}) => {
+  #handleSortChange = ({ sortType }) => {
     if (this.#currentSortType === sortType) {
       return;
     }
@@ -135,7 +159,7 @@ export default class MainPresenter {
     this.#eventsPresentor.clear();
   };
 
-  get events () {
+  get events() {
     if (this.#currentSortType === 'day') {
       return this.#eventsModel.allEvents;
     } else {

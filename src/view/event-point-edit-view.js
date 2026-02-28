@@ -116,7 +116,6 @@ function createEventPointEdit({
   offersModel,
   destinationsModel
 }) {
-  // console.log(event);
 
   const eventStartDate = getFormettedDate(event.dateFrom, DateFormat.eventGroupTime);
   const eventEndDate = getFormettedDate(event.dateTo, DateFormat.eventGroupTime);
