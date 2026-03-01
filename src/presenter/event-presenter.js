@@ -3,11 +3,11 @@ import EventPointEditView from '../view/event-point-edit-view.js';
 import EventPointAddView from '../view/event-point-add-view.js';
 
 import { remove, render, replace } from '../framework/render.js';
-import { EVENT_MODE, USER_ACTION, UPDATE_TYPE } from '../const.js';
+import { EVENT_MODE, USER_ACTION, UPDATE_TYPE, NEW_EVENT, RENDER_POSITION } from '../const.js';
 
 export default class EventPresentor {
   // Containers
-  #eventListContainer = null;
+  #eventContainer = null;
   // Models
   #offersModel = null;
   #destinationsModel = null;
@@ -17,18 +17,19 @@ export default class EventPresentor {
   // Components
   #eventComponent = null;
   #eventEditComponent = null;
+  #eventAddComponent = null;
 
   #event = null;
   #mode = EVENT_MODE.DEFAULT;
 
   constructor({
-    eventListContainer,
+    eventContainer,
     offersModel,
     destinationsModel,
     onDataChange,
     onModeChange,
   }) {
-    this.#eventListContainer = eventListContainer;
+    this.#eventContainer = eventContainer;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
 
@@ -40,7 +41,7 @@ export default class EventPresentor {
     this.#event = event;
 
     this.#eventComponent = this.#createEventComponent();
-    render(this.#eventComponent, this.#eventListContainer);
+    render(this.#eventComponent, this.#eventContainer);
 
     this.#eventEditComponent = this.#createEventEditComponent();
   }
@@ -61,14 +62,9 @@ export default class EventPresentor {
     this.#eventEditComponent = updatedEventEditComponent;
   }
 
-  add(event) {
-    const newEvent = new EventPointAddView({
-      event: event,
-      destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel
-    });
-
-    render(newEvent, this.#eventListContainer, 'AFTERBEGIN');
+  add() {
+    this.#eventAddComponent = this.#createEventAddComponent();
+    render(this.#eventAddComponent, this.#eventContainer, RENDER_POSITION.AFTERBEGIN);
   }
 
   #createEventComponent() {
@@ -94,6 +90,17 @@ export default class EventPresentor {
     );
   }
 
+  #createEventAddComponent() {
+    return new EventPointAddView({
+      event: NEW_EVENT,
+      destinationsModel: this.#destinationsModel,
+      offersModel: this.#offersModel,
+      onSubmitForm: this.#handleFormSubmit,
+      onCancelForm: this.#handleFormCancel
+    }
+    );
+  }
+
   #switchToForm() {
     replace(this.#eventEditComponent, this.#eventComponent);
     this.#handleModeChange();
@@ -114,9 +121,7 @@ export default class EventPresentor {
   };
 
   #handleFavoriteClick = () => {
-
     this.#event.isFavorite = !this.#event.isFavorite;
-
     this.#handleEventChange({
       actionType: USER_ACTION.UPDATE_TASK,
       updateType: UPDATE_TYPE.PATCH,
@@ -124,13 +129,24 @@ export default class EventPresentor {
     });
   };
 
-  #handleFormSubmit = ({ event }) => {
+  #handleFormSubmit = ({event}) => {
     this.#handleEventChange({
       actionType: USER_ACTION.UPDATE_TASK,
       updateType: UPDATE_TYPE.MINOR,
       update: event
     });
-    this.#handleSwitchToCard();
+
+    if (this.#eventComponent) {
+      this.#handleSwitchToCard();
+    } else {
+      this.#event = event;
+      remove(this.#eventAddComponent);
+      this.#handleEventChange({
+        actionType: USER_ACTION.ADD_TASK,
+        updateType: UPDATE_TYPE.MINOR,
+        update: this.#event
+      });
+    }
   };
 
   #handleFormDelete = () => {
@@ -138,6 +154,16 @@ export default class EventPresentor {
       actionType: USER_ACTION.DELETE_TASK,
       updateType: UPDATE_TYPE.MINOR,
       update: this.#event
+    });
+  };
+
+  #handleFormCancel = () => {
+    remove(this.#eventAddComponent);
+    this.#eventAddComponent = null;
+    this.#handleEventChange({
+      actionType: USER_ACTION.CANSEL_TASK,
+      updateType: null,
+      update: null
     });
   };
 

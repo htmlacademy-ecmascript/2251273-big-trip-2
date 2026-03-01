@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Returns a formatted date string based on the given date and format.
@@ -87,6 +88,11 @@ function sortEventsByType(events, type) {
   return events;
 }
 
+function generateUniqueEventId(array) {
+  const id = uuidv4();
+  return array.includes(id) ? generateUniqueEventId(array) : id;
+}
+
 export {
   getFormettedDate,
   getDurationTime,
@@ -97,4 +103,5 @@ export {
   addOfferInArray,
   deleteOfferInArray,
   sortEventsByType,
+  generateUniqueEventId,
 };

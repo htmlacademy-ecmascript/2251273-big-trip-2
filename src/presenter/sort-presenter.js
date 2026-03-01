@@ -30,4 +30,8 @@ export default class SortPresenter {
     this.#onSortChange({sortType: evt.target.dataset.sortType});
   };
 
+  get element() {
+    return this.#eventSort.element;
+  }
+
 }

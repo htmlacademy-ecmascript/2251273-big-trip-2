@@ -8,17 +8,20 @@ import { render } from '../framework/render.js';
 import { sortEventsByType, } from '../utils.js';
 import { USER_ACTION, UPDATE_TYPE, NEW_EVENT } from '../const.js';
 
+const newEventButton = document.querySelector('.trip-main__event-add-btn');
+
 export default class MainPresenter {
-  #eventListContainer = new EventListView();
   // Containers
   #eventContainer = null;
+  #eventListContainer = new EventListView();
   // Models
   #eventsModel = null;
   #offersModel = null;
   #destinationsModel = null;
-  // Temp
+  // Presenters
   #eventsPresentor = new Map();
   #sortPresenter = null;
+  // Temp
   #currentSortType = 'day';
 
   constructor({
@@ -36,18 +39,15 @@ export default class MainPresenter {
   }
 
   #handleViewAction = ({ actionType, updateType, update }) => {
-    // console.log({actionType, updateType, update});
-    // console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
     if (actionType === USER_ACTION.UPDATE_TASK) {
       this.#eventsModel.updateEvent(updateType, update);
     } else if (actionType === USER_ACTION.ADD_TASK) {
+      this.#newButtonEnabled();
       this.#eventsModel.addEvent(updateType, update);
     } else if (actionType === USER_ACTION.DELETE_TASK) {
       this.#eventsModel.deleteEvent(updateType, update);
+    } else if (actionType === USER_ACTION.CANSEL_TASK) {
+      this.#newButtonEnabled();
     }
   };
 
@@ -58,25 +58,21 @@ export default class MainPresenter {
       this.#clearEvents();
       this.#renderAllEvents(this.events);
     } else if (updateType === UPDATE_TYPE.MAJOR) {
-      this.#eventsPresentor.get(data.id).remove();
+      // TODO: Доработать!
     }
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
   };
 
   // Инициализируем презентер
   init() {
-    // Init models
+    // Инициализация
     this.#eventsModel.init();
     this.#offersModel.init();
     this.#destinationsModel.init();
-
+    // Отрисовка
     this.#renderSortEvent();
     this.#renderEventsListContainer();
     this.#renderAllEvents(this.events);
-
+    // Обработчики
     this.#handleNewEventClick();
   }
 
@@ -85,16 +81,19 @@ export default class MainPresenter {
     render(this.#eventListContainer, this.#eventContainer);
   }
 
+  // Обработчик кнопки "Новое событие"
   #handleNewEventClick() {
-    const newEventButton = document.querySelector('.trip-main__event-add-btn');
     newEventButton.addEventListener('click', () => {
       this.#createNewEvent();
+      this.#newButtonDisabled();
+      this.#handleModeChange();
     });
   }
 
+  // Создаем новое событие
   #createNewEvent(event = NEW_EVENT) {
     const eventPresentor = this.#createEventPresentor();
-    eventPresentor.add(event);
+    eventPresentor.add({event});
   }
 
   // Отрисовываем все события
@@ -104,17 +103,18 @@ export default class MainPresenter {
     });
   }
 
+  // Отрисовываем одно событие
   #renderEvent(event) {
     const eventPresentor = this.#createEventPresentor();
-
     this.#eventsPresentor.set(event.id, eventPresentor);
     eventPresentor.init(event);
   }
 
+  // Создаем презентер события
   #createEventPresentor() {
     const eventPresentor = new EventPresenter({
       // Containers
-      eventListContainer: this.#eventListContainer.element,
+      eventContainer: this.#eventListContainer.element,
       // Models
       eventsModel: this.#eventsModel,
       offersModel: this.#offersModel,
@@ -129,7 +129,7 @@ export default class MainPresenter {
   // Отрисовываем сортировку
   #renderSortEvent() {
     this.#sortPresenter = new SortPresenter({
-      sortListContainer: this.#eventListContainer.element,
+      sortListContainer: this.#eventContainer,
       onSortChange: this.#handleSortChange,
     });
     this.#sortPresenter.init();
@@ -140,6 +140,7 @@ export default class MainPresenter {
     this.#eventsPresentor.forEach((eventPresentor) => eventPresentor.resetView());
   };
 
+  // Обработчик сортировки
   #handleSortChange = ({ sortType }) => {
     if (this.#currentSortType === sortType) {
       return;
@@ -154,11 +155,23 @@ export default class MainPresenter {
     }
   };
 
+  // Очистка событий
   #clearEvents = () => {
     this.#eventsPresentor.forEach((eventPresentor) => eventPresentor.destroy());
     this.#eventsPresentor.clear();
   };
 
+  // Выключаем кнопку
+  #newButtonDisabled = () => {
+    newEventButton.disabled = true;
+  };
+
+  // Включаем кнопку
+  #newButtonEnabled = () => {
+    newEventButton.disabled = false;
+  };
+
+  // Получаем события
   get events() {
     if (this.#currentSortType === 'day') {
       return this.#eventsModel.allEvents;

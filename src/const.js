@@ -56,6 +56,7 @@ const EVENT_MODE = {
 const USER_ACTION = {
   UPDATE_TASK: 'UPDATE',
   ADD_TASK: 'ADD',
+  CANSEL_TASK: 'CANCEL',
   DELETE_TASK: 'DELETE',
 };
 
@@ -76,6 +77,11 @@ const NEW_EVENT = {
   'type': 'flight'
 };
 
+const RENDER_POSITION = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
 export {
   MAX_POINTS,
   TypePoint,
@@ -85,5 +91,6 @@ export {
   EVENT_MODE,
   USER_ACTION,
   UPDATE_TYPE,
-  NEW_EVENT
+  NEW_EVENT,
+  RENDER_POSITION,
 };

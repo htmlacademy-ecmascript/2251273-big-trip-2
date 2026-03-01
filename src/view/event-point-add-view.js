@@ -134,7 +134,7 @@ function createEventPointAdd({
                   ${crateEventTypeList({ event, destinationsModel })}
                   ${createEventDate({ eventStartDate, eventEndDate })}
                   ${createEventPrice({ eventPrice })}
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${event.destination ? '' : 'disabled'}>Save</button>
                   <button class="event__reset-btn" type="reset">Cancel</button>
                 </header>
                 <section class="event__details">
@@ -188,14 +188,14 @@ export default class EventPointAddView extends AbstractView {
   }
 
   _restoreHandlers() {
-
     this.element.querySelector('.event').addEventListener('submit', (evt) => {
       evt.preventDefault();
-      // this.#onSubmitForm({event:this._state});
+      this.#onSubmitForm({event:this._state});
     });
 
     this.element.querySelector('.event').addEventListener('reset', (evt) => {
       evt.preventDefault();
+      this.#onCancelForm();
     });
 
     this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
@@ -239,7 +239,7 @@ export default class EventPointAddView extends AbstractView {
   };
 
   #setDateFrom = () => {
-    this._state.dateFrom = dayjs().toDate();
+    this._state.dateFrom = dayjs().toISOString();
     if (this._state.dateFrom) {
       this.#dateFrom = flatpickr(this.element.querySelector('#event-start-time-1'), {
         enableTime: true,
@@ -252,7 +252,7 @@ export default class EventPointAddView extends AbstractView {
   };
 
   #setDateTo = () => {
-    this._state.dateTo = dayjs().add(1, 'day').toDate();
+    this._state.dateTo = dayjs().add(1, 'day').toISOString();
     if (this._state.dateTo) {
       this.#dateTo = flatpickr(this.element.querySelector('#event-end-time-1'), {
         enableTime: true,
@@ -273,6 +273,5 @@ export default class EventPointAddView extends AbstractView {
     this._state.dateTo = userDate.at(0);
     this.#updateState();
   };
-
 
 }

@@ -122,11 +122,11 @@ function createEventPointEdit({
   const eventPrice = event.basePrice;
   const eventOffers = event.offers;
 
-  const allOffers = offersModel.getOfferByType(event.type);
-  const destination = destinationsModel.getDestinationById(event.destination);
+  const allOffers = offersModel.getOfferByType(event?.type) || [];
+  const destination = destinationsModel.getDestinationById(event?.destination) || {};
 
-  const eventDescription = destination.description;
-  const eventPicture = destination.pictures;
+  const eventDescription = destination?.description;
+  const eventPicture = destination?.pictures;
 
   return (`
             <li class="trip-events__item">
