@@ -17,10 +17,6 @@ export default class SortPresenter {
   }
 
   init() {
-    this.#eventSort = new EventSortView({
-      allTypesSorting: ALL_TYPES_SORTING,
-      onSortTypeChange: this.#handleSortTypeChange
-    });
     this.#renderListSort();
   }
 
@@ -34,6 +30,10 @@ export default class SortPresenter {
   }
 
   #renderListSort() {
+    this.#eventSort = new EventSortView({
+      allTypesSorting: ALL_TYPES_SORTING,
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#eventSort, this.#sortListContainer, RENDER_POSITION.AFTERBEGIN);
   }
 

@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 
-import { getFirstEvent, getLastEvent, cutCityes } from '../utils.js';
+import { getFormettedDate,getFirstEvent, getLastEvent, cutCityes } from '../utils.js';
+import { DateFormat } from '../const.js';
 
 function createTripInfo({
   eventsModel,
@@ -19,7 +20,7 @@ function createTripInfo({
             <div class="trip-info__main">
               <h1 class="trip-info__title">${cutCityes(allCities)}</h1>
 
-              <p class="trip-info__dates">${ fisrtEventDate }&mdash;${ lastEventDate }</p>
+              <p class="trip-info__dates">${ getFormettedDate(fisrtEventDate, DateFormat.eventDate) } &mdash; ${ getFormettedDate(lastEventDate, DateFormat.eventDate) }</p>
             </div>
 
             <p class="trip-info__cost">

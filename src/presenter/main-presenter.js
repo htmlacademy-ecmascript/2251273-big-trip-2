@@ -197,6 +197,8 @@ export default class MainPresenter {
     this.#currentFilterType = filterType;
     this.#clearEvents();
     this.#renderAllEvents(this.events);
+
+    this.#resetSort();
   };
 
   // Сброс фильтра
