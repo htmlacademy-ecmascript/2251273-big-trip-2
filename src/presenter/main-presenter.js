@@ -55,7 +55,7 @@ export default class MainPresenter {
   }
 
   #handleViewAction = ({ actionType, updateType, update }) => {
-    this.#tripPresenter.update();
+    // this.#tripPresenter.update();
     if (actionType === USER_ACTION.UPDATE_TASK) {
       this.#eventsModel.updateEvent(updateType, update);
     } else if (actionType === USER_ACTION.ADD_TASK) {
@@ -73,7 +73,9 @@ export default class MainPresenter {
       this.#eventsPresentor.get(data.id).update(data);
     } else if (updateType === UPDATE_TYPE.MINOR) {
       this.#clearEvents();
+      this.#resetSort();
       this.#renderAllEvents(this.events);
+      this.#tripPresenter.update(this.#currentFilterType);
     } else if (updateType === UPDATE_TYPE.MAJOR) {
       // TODO: Доработать!
     }
@@ -93,18 +95,18 @@ export default class MainPresenter {
     this.#renderAllEvents(this.events);
     // Обработчики
     this.#handleNewEventClick();
-    this.#sortPresenter.init();
+    // this.#sortPresenter.init();
     this.#tripPresenter.init(this.#currentFilterType);
   }
 
   // Отрисовываем пустой список
-  // #createListEmpty() {
-  //   const typeErrorMessage = this.#currentFilterType.toUpperCase();
-  //   this.#listEmptyView = new ListEmptyView({
-  //     errorMessage: ERROR_MESSAGE[typeErrorMessage]
-  //   });
-  //   render(this.#listEmptyView, this.#eventContainer);
-  // }
+  #createListEmpty() {
+    const typeErrorMessage = this.#currentFilterType.toUpperCase();
+    this.#listEmptyView = new ListEmptyView({
+      errorMessage: ERROR_MESSAGE[typeErrorMessage]
+    });
+    render(this.#listEmptyView, this.#eventContainer);
+  }
 
   // Отрисовываем сортировку
   #createSortEvent() {
@@ -112,7 +114,9 @@ export default class MainPresenter {
       sortListContainer: this.#eventContainer,
       onSortChange: this.#handleSortChange,
     });
-    // this.#sortPresenter.init();
+    if(this.events.length > 0) {
+      this.#sortPresenter.init();
+    }
   }
 
   // Создаем презентер поездки
@@ -134,6 +138,11 @@ export default class MainPresenter {
 
   // Отрисовываем все события
   #renderAllEvents(eventsList) {
+    remove(this.#listEmptyView);
+    if (eventsList.length === 0) {
+      this.#createListEmpty();
+      return;
+    }
     eventsList.forEach((event) => {
       this.#renderEvent(event);
     });
@@ -213,12 +222,6 @@ export default class MainPresenter {
     this.#renderAllEvents(this.events);
     this.#resetSort();
   };
-
-  // Сброс фильтра
-  // #resetFilter = () => {
-  //   this.#currentFilterType = 'everything';
-  //   this.#tripPresenter.update();
-  // };
 
   // Очистка событий
   #clearEvents = () => {
