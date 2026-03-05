@@ -122,6 +122,10 @@ function filterEventsByType(array, type) {
   return array;
 }
 
+function getNumberFromString(string) {
+  return Number(string.replace(/[^0-9]/g, ''));
+}
+
 export {
   getFormettedDate,
   getDurationTime,
@@ -137,4 +141,5 @@ export {
   getLastEvent,
   cutCityes,
   filterEventsByType,
+  getNumberFromString,
 };

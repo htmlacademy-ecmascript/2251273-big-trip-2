@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
-import { getFormettedDate, addOfferInArray, deleteOfferInArray} from './../utils.js';
+import { getFormettedDate, addOfferInArray, deleteOfferInArray, getNumberFromString} from './../utils.js';
 import { DateFormat, TypePoint } from '../const.js';
 
 import flatpickr from 'flatpickr';
@@ -228,6 +228,11 @@ export default class EventPointEditView extends AbstractStatefulView {
       const value = this.element.querySelector('.event__input--destination').value;
       this._state.destination = this.#destinationsModel.getIdByName(value);
       this.#updateState();
+    });
+
+    this.element.querySelector('.event__input--price').addEventListener('input', () => {
+      this._state.basePrice = getNumberFromString(this.element.querySelector('.event__input--price').value);
+      this.element.querySelector('.event__input--price').value = this._state.basePrice;
     });
 
     this.#setDateFrom();
