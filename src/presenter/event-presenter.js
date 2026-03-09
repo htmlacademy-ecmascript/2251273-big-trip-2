@@ -1,55 +1,58 @@
 import EventPointView from '../view/event-point-view.js';
 import EventPointEditView from '../view/event-point-edit-view.js';
+import EventPointAddView from '../view/event-point-add-view.js';
 
 import { remove, render, replace } from '../framework/render.js';
-import { EVENT_MODE } from '../const.js';
+import { EVENT_MODE, USER_ACTION, UPDATE_TYPE, NEW_EVENT, RENDER_POSITION } from '../const.js';
 
 export default class EventPresentor {
   // Containers
-  #eventListContainer = null;
+  #eventContainer = null;
   // Models
   #offersModel = null;
   #destinationsModel = null;
   // Handlers
   #handleEventChange = null;
   #handleModeChange = null;
-  #handleEventSave = null;
-  #handleEventDelete = null;
   // Components
   #eventComponent = null;
   #eventEditComponent = null;
-
+  #eventAddComponent = null;
+  // Temp
   #event = null;
   #mode = EVENT_MODE.DEFAULT;
 
   constructor({
-    eventListContainer,
+    // Containers
+    eventContainer,
+    // Models
     offersModel,
     destinationsModel,
-    onEventChange,
+    // Handlers
+    onDataChange,
     onModeChange,
-    onEventSave,
-    onEventDelete
   }) {
-    //
-    this.#eventListContainer = eventListContainer;
+    // Containers
+    this.#eventContainer = eventContainer;
+    // Models
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
-    this.#handleEventChange = onEventChange;
+    // Handlers
+    this.#handleEventChange = onDataChange;
     this.#handleModeChange = onModeChange;
-    this.#handleEventSave = onEventSave;
-    this.#handleEventDelete = onEventDelete;
   }
 
+  // Инициализация события
   init(event) {
     this.#event = event;
 
     this.#eventComponent = this.#createEventComponent();
-    render(this.#eventComponent, this.#eventListContainer);
+    render(this.#eventComponent, this.#eventContainer);
 
     this.#eventEditComponent = this.#createEventEditComponent();
   }
 
+  // Обновление события
   update(event) {
     this.#event = event;
 
@@ -62,28 +65,30 @@ export default class EventPresentor {
       replace(updatedEventEditComponent, this.#eventEditComponent);
       this.#eventEditComponent = updatedEventEditComponent;
     }
-
     this.#eventComponent = updatedEventComponent;
     this.#eventEditComponent = updatedEventEditComponent;
-
   }
 
+  // Добавление события
+  add() {
+    this.#eventAddComponent = this.#createEventAddComponent();
+    render(this.#eventAddComponent, this.#eventContainer, RENDER_POSITION.AFTERBEGIN);
+  }
+
+  // Создание компонента
   #createEventComponent() {
     return new EventPointView({
-      event: this.#event,
-      offersModel: this.#offersModel,
-      destinationsModel: this.#destinationsModel,
+      ...this.component,
       onSwitchToForm: this.#handleSwitchToForm,
       onFavoriteClick: this.#handleFavoriteClick
     }
     );
   }
 
+  // Создание компонента редактирования
   #createEventEditComponent() {
     return new EventPointEditView({
-      event: this.#event,
-      offersModel: this.#offersModel,
-      destinationsModel: this.#destinationsModel,
+      ...this.component,
       onSwitchToCard: this.#handleSwitchToCard,
       onSubmitForm: this.#handleFormSubmit,
       onDeleteForm: this.#handleFormDelete
@@ -91,39 +96,92 @@ export default class EventPresentor {
     );
   }
 
+  // Создание компонента добавления
+  #createEventAddComponent() {
+    return new EventPointAddView({
+      ...this.component,
+      event: NEW_EVENT,
+      onSubmitForm: this.#handleFormSubmit,
+      onCancelForm: this.#handleFormCancel
+    }
+    );
+  }
+
+  // Переключение режима на редактирование
   #switchToForm() {
     replace(this.#eventEditComponent, this.#eventComponent);
     this.#handleModeChange();
     this.#mode = EVENT_MODE.EDITING;
   }
 
+  // Переключение режима на просмотр
   #switchToCard() {
     replace(this.#eventComponent, this.#eventEditComponent);
     this.#mode = EVENT_MODE.DEFAULT;
   }
 
+  // Обработчик переключения на редактирование
   #handleSwitchToForm = () => {
     this.#switchToForm();
   };
 
+  // Обработчик переключения на просмотр
   #handleSwitchToCard = () => {
     this.#switchToCard();
   };
 
+  // Обработчик клика по избранному
   #handleFavoriteClick = () => {
     this.#event.isFavorite = !this.#event.isFavorite;
-    this.#handleEventChange(this.#event);
+    this.#handleEventChange({
+      actionType: USER_ACTION.UPDATE_TASK,
+      updateType: UPDATE_TYPE.PATCH,
+      update: this.#event
+    });
   };
 
-  #handleFormSubmit = (event) => {
-    this.#handleEventSave(event);
-    this.#handleSwitchToCard();
+  // Обработчик отправки формы
+  #handleFormSubmit = ({event}) => {
+    this.#handleEventChange({
+      actionType: USER_ACTION.UPDATE_TASK,
+      updateType: UPDATE_TYPE.MINOR,
+      update: event
+    });
+
+    if (this.#eventComponent) {
+      this.#handleSwitchToCard();
+    } else {
+      this.#event = event;
+      remove(this.#eventAddComponent);
+      this.#handleEventChange({
+        actionType: USER_ACTION.ADD_TASK,
+        updateType: UPDATE_TYPE.MINOR,
+        update: this.#event
+      });
+    }
   };
 
+  // Обработчик удаления события
   #handleFormDelete = () => {
-    this.#handleEventDelete({event: this.#event});
+    this.#handleEventChange({
+      actionType: USER_ACTION.DELETE_TASK,
+      updateType: UPDATE_TYPE.MINOR,
+      update: this.#event
+    });
   };
 
+  // Обработчик отмены события
+  #handleFormCancel = () => {
+    remove(this.#eventAddComponent);
+    this.#eventAddComponent = null;
+    this.#handleEventChange({
+      actionType: USER_ACTION.CANSEL_TASK,
+      updateType: null,
+      update: null
+    });
+  };
+
+  // Сброс просмотра
   resetView() {
     if (this.#mode !== EVENT_MODE.DEFAULT) {
       this.#switchToCard();
@@ -131,9 +189,22 @@ export default class EventPresentor {
     }
   }
 
+  // Удаление компонентов
   destroy() {
     remove(this.#eventComponent);
     remove(this.#eventEditComponent);
+
+    remove(this.#eventAddComponent);
+    remove(this.#eventAddComponent);
+  }
+
+  // Получение компонентов
+  get component () {
+    return {
+      event: this.#event,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel
+    };
   }
 
 }

@@ -12,11 +12,11 @@ export default class EventsModel {
   }
 
   getDestinationById(id) {
-    return this.#destinations.find((destination) => destination.id === id || null);
+    return this.#destinations.find((destination) => destination?.id === id || null);
   }
 
   getIdByName(name) {
-    return this.#destinations.find((destination) => destination.name === name).id || null;
+    return this.#destinations.find((destination) => destination?.name === name)?.id || null;
   }
 
   get allCities() {

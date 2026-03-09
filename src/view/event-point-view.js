@@ -7,9 +7,9 @@ function createEventPoint({event, offersModel, destinationsModel}) {
   const eventType = event.type;
 
   const selectedOffers = event.offers;
-  const allOffers = offersModel.getOfferByType(event.type);
+  const allOffers = offersModel.getOfferByType(event?.type);
 
-  const eventSity = destinationsModel.getDestinationById(event.destination).name;
+  const eventSity = destinationsModel.getDestinationById(event?.destination)?.name || '';
 
   const eventDateFrom = getFormettedDate(event.dateFrom, DateFormat.eventDate);
   const eventStartDate = getFormettedDate(event.dateFrom, DateFormat.eventTime);

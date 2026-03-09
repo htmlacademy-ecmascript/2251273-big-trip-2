@@ -12,7 +12,10 @@ function createSortEvent({allTypesSorting}) {
 }
 
 export default class EventSortView extends AbstractView {
-  constructor({allTypesSorting, onSortTypeChange}) {
+  constructor({
+    allTypesSorting,
+    onSortTypeChange
+  }) {
     super();
     this.allTypesSorting = allTypesSorting;
     this.onSortTypeChange = onSortTypeChange;

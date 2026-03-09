@@ -53,4 +53,52 @@ const EVENT_MODE = {
   EDITING: 'EDITING'
 };
 
-export { MAX_POINTS, TypePoint , DateFormat, ALL_TYPES_SORTING, ALL_TYPES_FILTERS, EVENT_MODE };
+const USER_ACTION = {
+  UPDATE_TASK: 'UPDATE',
+  ADD_TASK: 'ADD',
+  CANSEL_TASK: 'CANCEL',
+  DELETE_TASK: 'DELETE',
+};
+
+const UPDATE_TYPE = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const NEW_EVENT = {
+  'id': null,
+  'basePrice': 0,
+  'dateFrom': null,
+  'dateTo': null,
+  'destination': null,
+  'isFavorite': false,
+  'offers': [],
+  'type': 'flight'
+};
+
+const RENDER_POSITION = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+const ERROR_MESSAGE = {
+  EVERYTHING: 'Click New Event to create your first point',
+  PAST: 'There are no past events now',
+  PRESENT: 'There are no present events now',
+  FUTURE: 'There are no future events now',
+};
+
+export {
+  MAX_POINTS,
+  TypePoint,
+  DateFormat,
+  ALL_TYPES_SORTING,
+  ALL_TYPES_FILTERS,
+  EVENT_MODE,
+  USER_ACTION,
+  UPDATE_TYPE,
+  NEW_EVENT,
+  RENDER_POSITION,
+  ERROR_MESSAGE
+};
