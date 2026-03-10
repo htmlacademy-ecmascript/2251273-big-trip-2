@@ -64,6 +64,7 @@ const UPDATE_TYPE = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const NEW_EVENT = {
@@ -96,6 +97,10 @@ const METHOD_API = {
   DELETE: 'DELETE',
 };
 
+const AUTHORIZATION = 'Basic Zm9vYmFyOjEyMzQ1Njc4';
+
+const URL_API = 'https://22.objects.htmlacademy.pro/big-trip';
+
 export {
   MAX_POINTS,
   TypePoint,
@@ -108,5 +113,7 @@ export {
   NEW_EVENT,
   RENDER_POSITION,
   ERROR_MESSAGE,
-  METHOD_API
+  METHOD_API,
+  AUTHORIZATION,
+  URL_API,
 };

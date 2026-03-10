@@ -2,7 +2,7 @@ import ApiService from '../framework/api-service.js';
 
 import { METHOD_API } from '../const.js';
 
-export default class EventApiService extends ApiService {
+export default class EventsApiService extends ApiService {
   constructor(endPoint, authorization) {
     super(endPoint, authorization);
   }

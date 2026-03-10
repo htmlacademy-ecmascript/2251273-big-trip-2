@@ -78,6 +78,8 @@ export default class MainPresenter {
       this.#tripPresenter.update(this.#currentFilterType);
     } else if (updateType === UPDATE_TYPE.MAJOR) {
       // TODO: Доработать!
+    } else if (updateType === UPDATE_TYPE.INIT) {
+      // console.log('INIT');
     }
   };
 
@@ -87,6 +89,7 @@ export default class MainPresenter {
     this.#eventsModel.init();
     this.#offersModel.init();
     this.#destinationsModel.init();
+    console.log(this.events);
     // Создание
     this.#createSortEvent();
     this.#createTripPresenter();
@@ -94,9 +97,9 @@ export default class MainPresenter {
     this.#renderEventsListContainer();
     this.#renderAllEvents(this.events);
     // Обработчики
-    this.#handleNewEventClick();
-    this.#tripPresenter.init(this.#currentFilterType);
-    document.addEventListener('keydown', this.#handleKeyDown);
+    // this.#handleNewEventClick();
+    // this.#tripPresenter.init(this.#currentFilterType);
+    // document.addEventListener('keydown', this.#handleKeyDown);
   }
 
   // Отрисовываем пустой список
@@ -137,7 +140,7 @@ export default class MainPresenter {
       // Containers
       eventContainer: this.#eventListContainer.element,
       // Models
-      eventsModel: this.#eventsModel,
+      // eventsModel: this.#eventsModel,
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       // Handlers
@@ -251,10 +254,11 @@ export default class MainPresenter {
 
   // Получаем события после сортировки и фильтра
   get events() {
-    return sortEventsByType(
-      filterEventsByType(
-        structuredClone(this.#eventsModel.allEvents), this.#currentFilterType),
-      this.#currentSortType);
+    try {
+      return this.#eventsModel.allEvents();
+    } catch (err) {
+      return [];
+    }
   }
 
 }
