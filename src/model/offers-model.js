@@ -1,18 +1,33 @@
-import { getAllOffers } from '../mock/offers.js';
+import Observable from '../framework/observable.js';
+// import { UPDATE_TYPE } from '../const.js';
 
-export default class EventsModel {
+export default class OffersModel extends Observable {
   #offers = null;
+  #offersApiService = null;
 
-  constructor() {
-    this.#offers = [];
+  constructor({
+    offersApiService,
+  }) {
+    super();
+    this.#offersApiService = offersApiService;
   }
 
-  init() {
-    this.#offers = getAllOffers();
+  async init() {
+    try {
+      this.#offers = await this.#offersApiService.offers();
+    } catch (err) {
+      this.#offers = [];
+      throw new Error('Can\'t load offers');
+    }
+    // this._notify(UPDATE_TYPE.INIT);
   }
 
   getOfferByType(type) {
-    return this.#offers.find((offer) => offer.type === type).offers || null;
+    return this.#offers.find((offer) => offer.type === type).offers;
+  }
+
+  get allOffers() {
+    return this.#offers || [];
   }
 
 }

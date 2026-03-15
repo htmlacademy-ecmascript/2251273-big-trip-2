@@ -1,14 +1,25 @@
-import { getAllDestinations } from '../mock/destinations.js';
+import Observable from '../framework/observable.js';
+// import { UPDATE_TYPE } from '../const.js';
 
-export default class EventsModel {
+export default class DestinationsModel extends Observable {
   #destinations = null;
+  #destinationsApiService = null;
 
-  constructor() {
-    this.#destinations = [];
+  constructor({
+    destinationsApiService,
+  }) {
+    super();
+    this.#destinationsApiService = destinationsApiService;
   }
 
-  init() {
-    this.#destinations = getAllDestinations();
+  async init() {
+    try {
+      this.#destinations = await this.#destinationsApiService.destinations();
+    } catch (err) {
+      this.#destinations = [];
+      throw new Error('Can\'t load destinations');
+    }
+    // this._notify(UPDATE_TYPE.INIT);
   }
 
   getDestinationById(id) {

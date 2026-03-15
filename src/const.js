@@ -64,6 +64,7 @@ const UPDATE_TYPE = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const NEW_EVENT = {
@@ -89,6 +90,17 @@ const ERROR_MESSAGE = {
   FUTURE: 'There are no future events now',
 };
 
+const METHOD_API = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+};
+
+const AUTHORIZATION = 'Basic Zm9vYmFyOjEyMzQ1Njc4';
+
+const URL_API = 'https://22.objects.htmlacademy.pro/big-trip';
+
 export {
   MAX_POINTS,
   TypePoint,
@@ -100,5 +112,8 @@ export {
   UPDATE_TYPE,
   NEW_EVENT,
   RENDER_POSITION,
-  ERROR_MESSAGE
+  ERROR_MESSAGE,
+  METHOD_API,
+  AUTHORIZATION,
+  URL_API,
 };
