@@ -153,7 +153,6 @@ export default class EventPresentor {
     // При добавлении события
     if (this.#eventAddComponent) {
       this.#event = event;
-      remove(this.#eventAddComponent);
       this.#handleEventChange({
         actionType: USER_ACTION.ADD_TASK,
         updateType: UPDATE_TYPE.MINOR,
@@ -194,8 +193,6 @@ export default class EventPresentor {
   destroy() {
     remove(this.#eventComponent);
     remove(this.#eventEditComponent);
-
-    remove(this.#eventAddComponent);
     remove(this.#eventAddComponent);
   }
 

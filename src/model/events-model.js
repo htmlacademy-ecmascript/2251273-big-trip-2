@@ -11,6 +11,7 @@ export default class EventsModel extends Observable {
     this.#eventApiService = eventApiService;
   }
 
+  // Инициализируем модель
   async init() {
     try {
       this.#events = await this.#eventApiService.events();
@@ -21,6 +22,7 @@ export default class EventsModel extends Observable {
     }
   }
 
+  // Преобразуем событие в формат для клиента
   #adaptedEventToClient(event) {
     const adaptedEvent = { ...event,
       basePrice: event.base_price,
@@ -37,6 +39,7 @@ export default class EventsModel extends Observable {
     return adaptedEvent;
   }
 
+  // Преобразуем событие в формат для сервера
   #adaptedEventToServer(event) {
     const adaptedEvent = {
       ...event,
@@ -63,22 +66,23 @@ export default class EventsModel extends Observable {
     return this.#events.find((event) => event.id === id) || null;
   }
 
-  // Обновляем события
+  // Обновляем событие
   async updateEvent(updateType, event) {
     try {
-      await this.#eventApiService.updateEvent(this.#adaptedEventToServer(event));
-      this.#events = this.#events.map((item) => item.id === event.id ? event : item);
+      await this.#eventApiService.updateEvent(this.#adaptedEventToServer(event)).then(() => {
+        this.#events = this.#events.map((item) => item.id === event.id ? event : item);
+      });
       this._notify(updateType, event);
     } catch (err) {
       throw new Error('Can\'t update event');
     }
   }
 
-  // Добавляем события
+  // Добавляем событие
   async addEvent(updateType, event) {
     try {
       await this.#eventApiService.addEvent(this.#adaptedEventToServer(event)).then(() => {
-        this.#events = [...this.#events, event];
+        this.init();
         this._notify(updateType, event);
       });
     } catch (err) {
@@ -86,14 +90,13 @@ export default class EventsModel extends Observable {
     }
   }
 
-  // Удаляем события
+  // Удаляем событие
   async deleteEvent(updateType, event) {
     try {
       await this.#eventApiService.deleteEvent(event).then(() => {
         this.#events = this.#events.filter((item) => item.id !== event.id);
         this._notify(updateType, event);
       }).catch(() => {
-        // TODO: добавить обработку!
         throw new Error('Can\'t delete event');
       });
     } catch (err) {
@@ -112,6 +115,7 @@ export default class EventsModel extends Observable {
     return this.#events.map((item) => item.id);
   }
 
+  // Получаем общую стоимость
   get totalPrice() {
     return this.#events.reduce((acc, item) => acc + item.basePrice, 0);
   }

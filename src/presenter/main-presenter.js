@@ -14,7 +14,7 @@ import { USER_ACTION, UPDATE_TYPE, NEW_EVENT,ERROR_MESSAGE } from '../const.js';
 const newEventButton = document.querySelector('.trip-main__event-add-btn');
 
 export default class MainPresenter {
-  // #events = null;
+
   // Containers
   #eventListContainer = new EventListView();
   #eventContainer = null;
@@ -68,6 +68,8 @@ export default class MainPresenter {
       this.#eventsModel.deleteEvent(updateType, update);
     } else if (actionType === USER_ACTION.CANSEL_TASK) {
       this.#newButtonEnabled();
+      this.#newEventPresentor.destroy();
+      this.#newEventPresentor = null;
     }
   };
 
@@ -77,10 +79,21 @@ export default class MainPresenter {
     } else if (updateType === UPDATE_TYPE.MINOR) {
       this.#clearEvents();
       this.#resetSort();
-      this.#renderAllEvents(this.events);
+      this.#createEventLoading();
+      if(this.#newEventPresentor) {
+        this.#newEventPresentor.destroy();
+      }
+      this.#eventsModel.init()
+        .then(() => {
+          this.#deleteEventLoading();
+          this.#newButtonEnabled();
+          this.#renderAllEvents(this.events);
+        }).catch(() => {
+          // TODO: добавить обработку!
+        });
       this.#tripPresenter.update(this.#currentFilterType);
     } else if (updateType === UPDATE_TYPE.MAJOR) {
-      // TODO: Доработать!
+      // TODO: добавить обработку!
     } else if (updateType === UPDATE_TYPE.INIT) {
       this.#newButtonEnabled();
       this.#deleteEventLoading();
@@ -285,7 +298,9 @@ export default class MainPresenter {
     if (isEscapeKey(evt)) {
       this.#newButtonEnabled();
       this.#handleModeChange();
-      this.#newEventPresentor.destroy();
+      if (this.#newEventPresentor) {
+        this.#newEventPresentor.destroy();
+      }
     }
   };
 

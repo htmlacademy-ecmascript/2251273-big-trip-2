@@ -96,7 +96,7 @@ const METHOD_API = {
   DELETE: 'DELETE',
 };
 
-const AUTHORIZATION = 'Basic Zm9vYmFyOjEyMzQ1Njc';
+const AUTHORIZATION = 'Basic Zm9vYmFyOjEyMzQ1Nj';
 
 const URL_API = 'https://22.objects.htmlacademy.pro/big-trip';
 

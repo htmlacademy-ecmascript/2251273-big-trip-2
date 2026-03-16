@@ -35,7 +35,7 @@ function crateEventTypeList({ event, destinationsModel }) {
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${TypePoint[event.type]}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationsModel.getDestinationById(event.destination).name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationsModel.getDestinationById(event.destination).name}" list="destination-list-1" autocomplete="off">
                     <datalist id="destination-list-1">
                     ${allCities.map((city) => `<option value="${city}"></option>`).join('')}
                     </datalist>
@@ -107,7 +107,7 @@ function createEventPrice({eventPrice}) {
       <label class="event__label" for="event-price-1">
       <span class="visually-hidden">Price</span>&euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}">
+      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}" autocomplete="off">
     </div>
   `);
 }
@@ -197,6 +197,7 @@ export default class EventPointEditView extends AbstractStatefulView {
 
   _restoreHandlers() {
     const eventSaveButton = this.element.querySelector('.event__save-btn');
+    const eventDeleteButton = this.element.querySelector('.event__reset-btn');
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
       this._setState(this.#event);
@@ -207,9 +208,15 @@ export default class EventPointEditView extends AbstractStatefulView {
     this.element.querySelector('.event').addEventListener('submit', (evt) => {
       evt.preventDefault();
       this.#onSubmitForm({event:this._state});
+      eventSaveButton.innerHTML = 'Saving...';
     });
 
-    this.element.querySelector('.event').addEventListener('reset', this.#onDeleteForm);
+    this.element.querySelector('.event').addEventListener('reset', (evt) => {
+      evt.preventDefault();
+      this.#onDeleteForm();
+      eventDeleteButton.disabled = true;
+      eventDeleteButton.innerHTML = 'Deleting...';
+    });
 
     this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
       checkbox.addEventListener('change', (evt) => {
