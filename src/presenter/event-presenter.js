@@ -71,16 +71,20 @@ export default class EventPresentor {
   }
 
   reset (event = this.#savedEvent) {
-    this.#savedEvent = this.#event;
     this.#event = {...event};
-
     const updatedEventEditComponent = this.#createEventEditComponent();
 
     if (this.#mode === EVENT_MODE.EDITING) {
+      updatedEventEditComponent.element.querySelector('.event--edit').classList.add('shake');
       replace(updatedEventEditComponent, this.#eventEditComponent);
       this.#eventEditComponent = updatedEventEditComponent;
     }
     this.#eventEditComponent = updatedEventEditComponent;
+    this.#eventComponent.element.querySelector('.event').classList.add('shake');
+    setTimeout(() => {
+      this.#eventComponent.element.querySelector('.event').classList.remove('shake');
+      this.#eventEditComponent.element.querySelector('.event--edit').classList.remove('shake');
+    }, 1000);
   }
 
   // Добавление события
@@ -89,6 +93,7 @@ export default class EventPresentor {
     if (this.#eventAddComponent) {
       remove(this.#eventAddComponent);
       this.#eventAddComponent = this.#createEventAddComponent(this.#event);
+      this.#eventAddComponent.element.querySelector('.event--edit').classList.add('shake');
       render(this.#eventAddComponent, this.#eventContainer, RENDER_POSITION.AFTERBEGIN);
     } else {
       this.#eventAddComponent = this.#createEventAddComponent();
@@ -137,12 +142,15 @@ export default class EventPresentor {
 
   // Переключение режима на просмотр
   #switchToCard() {
+    this.#event = {...this.#savedEvent};
     replace(this.#eventComponent, this.#eventEditComponent);
+    this.#eventEditComponent = this.#createEventEditComponent();
     this.#mode = EVENT_MODE.DEFAULT;
   }
 
   // Обработчик переключения на редактирование
   #handleSwitchToForm = () => {
+    this.#savedEvent = {...this.#event};
     this.#switchToForm();
   };
 

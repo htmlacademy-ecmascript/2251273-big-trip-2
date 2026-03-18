@@ -100,6 +100,11 @@ const AUTHORIZATION = 'Basic Zm9vYmFyOjEyMzQ1Nj';
 
 const URL_API = 'https://22.objects.htmlacademy.pro/big-trip';
 
+const TIME_LIMIT = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
+
 export {
   MAX_POINTS,
   TypePoint,
@@ -115,4 +120,5 @@ export {
   METHOD_API,
   AUTHORIZATION,
   URL_API,
+  TIME_LIMIT,
 };

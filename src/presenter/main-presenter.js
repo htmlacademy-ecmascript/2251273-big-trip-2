@@ -6,12 +6,15 @@ import TripPresenter from './trip-presenter.js';
 import EventListView from '../view/event-list-view.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import EventLoadingView from '../view/event-loading-view.js';
+import FailedLoadView from '../view/failed-load-view.js';
 // Utils
 import { remove, render } from '../framework/render.js';
 import { sortEventsByType, filterEventsByType, isEscapeKey } from '../utils.js';
-import { USER_ACTION, UPDATE_TYPE, NEW_EVENT,ERROR_MESSAGE } from '../const.js';
+import { USER_ACTION, UPDATE_TYPE, NEW_EVENT,ERROR_MESSAGE, TIME_LIMIT } from '../const.js';
 // DOM
 const newEventButton = document.querySelector('.trip-main__event-add-btn');
+// Framework
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class MainPresenter {
 
@@ -35,6 +38,12 @@ export default class MainPresenter {
   // Views
   #listEmptyView = null;
   #eventLoadingView = null;
+  #failedLoadView = null;
+  //
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TIME_LIMIT.LOWER_LIMIT,
+    upperLimit: TIME_LIMIT.UPPER_LIMIT
+  });
 
   constructor({
     // Containers
@@ -59,26 +68,35 @@ export default class MainPresenter {
   }
 
   #handleViewAction = ({ actionType, updateType, update }) => {
+    this.#uiBlocker.block();
     if (actionType === USER_ACTION.UPDATE_EVENT) {
       this.#eventsModel.updateEvent(updateType, update).then(() => {
-        // TODO: При удачном обновлении события!
       }).catch(() => {
-        // TODO: При ошибке обновления события!
         this.#eventsPresentor.get(update.id).reset(update);
+      }).finally(() => {
+        this.#uiBlocker.unblock();
       });
     } else if (actionType === USER_ACTION.ADD_EVENT) {
       this.#eventsModel.addEvent(updateType, update).then(() => {
         // TODO: При удачном добавлении события!
       }).catch(() => {
-        // TODO: При ошибке добавления события!
         this.#newEventPresentor.add(update);
+      }).finally(() => {
+        this.#uiBlocker.unblock();
       });
     } else if (actionType === USER_ACTION.DELETE_EVENT) {
-      this.#eventsModel.deleteEvent(updateType, update);
+      this.#eventsModel.deleteEvent(updateType, update).then(() => {
+        // TODO: При удачном удалении события!
+      }).catch(() => {
+        this.#eventsPresentor.get(update.id).reset(update);
+      }).finally(() => {
+        this.#uiBlocker.unblock();
+      });
     } else if (actionType === USER_ACTION.CANSEL_EVENT) {
       this.#newButtonEnabled();
       this.#newEventPresentor.destroy();
       this.#newEventPresentor = null;
+      this.#uiBlocker.unblock();
     }
   };
 
@@ -99,6 +117,11 @@ export default class MainPresenter {
           this.#renderAllEvents(this.events);
         }).catch(() => {
           // TODO: добавить обработку!
+          this.#newButtonDisabled();
+          this.#deleteEventLoading();
+          this.#sortPresenter.destroy();
+          this.#tripPresenter.destroy();
+          this.#createFailedLoading();
         });
       this.#tripPresenter.update(this.#currentFilterType);
     } else if (updateType === UPDATE_TYPE.MAJOR) {
@@ -144,14 +167,19 @@ export default class MainPresenter {
         document.addEventListener('keydown', this.#handleKeyDown);
       }).catch(() => {
         this.#deleteEventLoading();
-        // TODO: Доработать! Добавить обработку ошибок
+        this.#createFailedLoading();
       });
     } catch (err) {
-
       // TODO: Доработать! Добавить обработку ошибок
     } finally {
       // TODO: Доработать! Добавить финализацию
     }
+  }
+
+  // Создаем ошибку загрузки
+  #createFailedLoading() {
+    this.#failedLoadView = new FailedLoadView();
+    render(this.#failedLoadView, this.#eventContainer);
   }
 
   // Создаем прелоадер

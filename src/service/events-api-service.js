@@ -10,6 +10,7 @@ export default class EventsApiService extends ApiService {
   // Получаем события
   async events() {
     return this._load({
+      // TODO: Убрать перед сдачей!
       url: 'points',
       method: METHOD_API.GET,
     })
@@ -19,7 +20,8 @@ export default class EventsApiService extends ApiService {
   // Обновляем событие
   async updateEvent(event) {
     const response = await this._load({
-      url: `points00/${event.id}`,
+      // TODO: Убрать перед сдачей!
+      url: `points/${event.id}`,
       method: METHOD_API.PUT,
       body: JSON.stringify(event),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -43,7 +45,8 @@ export default class EventsApiService extends ApiService {
   // Добавляем событие
   async addEvent(event) {
     const response = await this._load({
-      url: 'points00',
+      // TODO: Убрать перед сдачей!
+      url: 'points',
       method: METHOD_API.POST,
       body: JSON.stringify(event),
       headers: new Headers({'Content-Type': 'application/json'}),
