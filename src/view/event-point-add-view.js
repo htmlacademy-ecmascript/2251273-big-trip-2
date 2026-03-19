@@ -283,10 +283,12 @@ export default class EventPointAddView extends AbstractStatefulView {
 
   #dateFromChangeHandler = (selectedDates) => {
     this._state.dateFrom = selectedDates[0].toISOString();
+    this.#dateTo.set('minDate', this._state.dateFrom);
   };
 
   #dateToChangeHandler = (selectedDates) => {
     this._state.dateTo = selectedDates[0].toISOString();
+    this.#dateFrom.set('maxDate', this._state.dateTo);
   };
 
 }
