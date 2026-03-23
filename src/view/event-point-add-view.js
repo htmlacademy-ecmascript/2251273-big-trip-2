@@ -122,7 +122,7 @@ function createEventPointAdd({
   const eventPrice = event.basePrice;
   const eventOffers = event.offers;
 
-  const allOffers = offersModel.getOfferByType(event.type);
+  const allOffers = offersModel.getOffersByType(event.type);
   const destination = destinationsModel.getDestinationById(event.destination);
 
   const eventDescription = destination?.description;

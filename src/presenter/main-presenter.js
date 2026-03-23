@@ -79,6 +79,7 @@ export default class MainPresenter {
     } else if (actionType === USER_ACTION.ADD_EVENT) {
       this.#eventsModel.addEvent(updateType, update).then(() => {
         // TODO: При удачном добавлении события!
+        // this.#tripPresenter.update(this.#currentFilterType);
       }).catch(() => {
         this.#newEventPresentor.add(update);
       }).finally(() => {
@@ -112,6 +113,7 @@ export default class MainPresenter {
       }
       this.#eventsModel.init()
         .then(() => {
+          this.#tripPresenter.update(this.#currentFilterType);
           this.#deleteEventLoading();
           this.#newButtonEnabled();
           this.#renderAllEvents(this.events);

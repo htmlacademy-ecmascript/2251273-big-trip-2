@@ -1,14 +1,18 @@
 import AbstractView from '../framework/view/abstract-view';
 
+import { filterEventsByType } from '../utils.js';
+
 function createTripFilter({
+  eventsModel,
   allTypesFilters,
   currentFilterType,
 }) {
+
   return (`
           <form class="trip-filters" action="#" method="get">
           ${allTypesFilters.map((type) => `
             <div class="trip-filters__filter">
-              <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${type === currentFilterType ? 'checked' : ''}>
+              <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${type === currentFilterType ? 'checked' : ''} ${filterEventsByType(eventsModel.allEvents, type).length === 0 ? 'disabled' : ''}>
               <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
             </div>
             `).join('')}
@@ -18,27 +22,29 @@ function createTripFilter({
 }
 
 export default class TripFilterView extends AbstractView {
+  #eventsModel = null;
   #allTypesFilters = null;
   #handleFilterChange = null;
   #currentFilterType = null;
 
   constructor({
+    eventsModel,
     allTypesFilters,
     onFilterChange,
     currentFilterType
   }) {
     super();
+    this.#eventsModel = eventsModel;
     this.#allTypesFilters = allTypesFilters;
-    // Handlers
     this.#handleFilterChange = onFilterChange;
-    // Текущий фильтр
     this.#currentFilterType = currentFilterType;
-    // Обработчики
+
     this._restoreHandlers();
   }
 
   get template() {
     return createTripFilter({
+      eventsModel: this.#eventsModel,
       allTypesFilters: this.#allTypesFilters,
       currentFilterType: this.#currentFilterType
     });

@@ -57,6 +57,7 @@ export default class TripPresenter {
   #renderTripInfo() {
     this.#tripInfo = new TripInfoView({
       eventsModel: this.#eventsModel,
+      offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel
     });
     render(this.#tripInfo, this.#tripInfoContainer, 'AFTERBEGIN');
@@ -64,6 +65,7 @@ export default class TripPresenter {
 
   #renderTripFilter() {
     this.#tripFilter = new TripFilterView({
+      eventsModel: this.#eventsModel,
       allTypesFilters: ALL_TYPES_FILTERS,
       onFilterChange: this.#handleFilterChange,
       currentFilterType: this.#currentFilterType,
