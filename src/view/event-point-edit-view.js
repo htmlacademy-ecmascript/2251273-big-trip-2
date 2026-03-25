@@ -78,13 +78,14 @@ function createEventDestination({eventDescription, eventPicture}) {
     return (`
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${eventDescription}</p>
-
-      <div class="event__photos-container">
+      ${eventDescription ? `<p class="event__destination-description">${eventDescription}</p>` : ''}
+      ${eventPicture.length > 0 ? `
+        <div class="event__photos-container">
         <div class="event__photos-tape">
           ${eventPicture.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('')}
         </div>
-      </div>
+      </div>` : ''}
+
     </section>
   `);
   }
@@ -123,7 +124,7 @@ function createEventPointEdit({
   const eventPrice = event.basePrice;
   const eventOffers = event.offers;
 
-  const allOffers = offersModel.getOfferByType(event?.type) || [];
+  const allOffers = offersModel.getOffersByType(event?.type) || [];
   const destination = destinationsModel.getDestinationById(event?.destination) || {};
 
   const eventDescription = destination?.description;
@@ -228,6 +229,12 @@ export default class EventPointEditView extends AbstractStatefulView {
     this.element.querySelectorAll('.event__type-input').forEach((radio) => {
       radio.addEventListener('change', () => {
         this.#choiceTypePoint(radio.dataset.type);
+        if (this._state.type !== this.#event.type) {
+          this._state.offers = [];
+        } else {
+          this._state.offers = this.#event.offers;
+          this.#updateState(this._setState);
+        }
       });
     });
 
@@ -235,6 +242,9 @@ export default class EventPointEditView extends AbstractStatefulView {
       const value = he.encode(this.element.querySelector('.event__input--destination').value);
       this._state.destination = this.#destinationsModel.getIdByName(value) || null;
       eventSaveButton.disabled = !this.#checkSubmitButton();
+      if (this._state.destination) {
+        this.#updateState(this._setState);
+      }
     });
 
     this.element.querySelector('.event__input--price').addEventListener('input', () => {

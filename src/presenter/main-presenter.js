@@ -112,6 +112,7 @@ export default class MainPresenter {
       }
       this.#eventsModel.init()
         .then(() => {
+          this.#tripPresenter.update(this.#currentFilterType);
           this.#deleteEventLoading();
           this.#newButtonEnabled();
           this.#renderAllEvents(this.events);

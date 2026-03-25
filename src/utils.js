@@ -79,13 +79,14 @@ function deleteOfferInArray(array, element) {
   return array.filter((item) => item !== element);
 }
 
-function sortEventsByType(events, type) {
+function sortEventsByType(events, type = 'day') {
   if (type === 'price') {
     return events.sort((a, b) => b.basePrice - a.basePrice);
   } else if (type === 'time') {
     return events.sort((a, b) => dayjs(b.dateTo).diff(dayjs(b.dateFrom)) - dayjs(a.dateTo).diff(dayjs(a.dateFrom)));
   } else if (type === 'day') {
-    return events.sort((a, b) => dayjs(b.dateFrom).diff(dayjs(a.dateFrom)));
+    // return events.sort((a, b) => dayjs(b.dateFrom).diff(dayjs(a.dateFrom)));
+    return events.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom)));
   }
   return events;
 }
