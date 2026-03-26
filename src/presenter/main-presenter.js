@@ -93,6 +93,7 @@ export default class MainPresenter {
         this.#uiBlocker.unblock();
       });
     } else if (actionType === USER_ACTION.CANSEL_EVENT) {
+      this.#renderAllEvents(this.events);
       this.#newButtonEnabled();
       this.#newEventPresentor.destroy();
       this.#newEventPresentor = null;
@@ -286,6 +287,7 @@ export default class MainPresenter {
     this.#newEventPresentor.add({event});
     this.#resetSort();
     this.#resetFilter();
+    remove(this.#listEmptyView);
   }
 
   // Сбрасываем режим редактирования и удаляем новое событие
@@ -359,6 +361,10 @@ export default class MainPresenter {
       });
       if (this.#newEventPresentor) {
         this.#newEventPresentor.destroy();
+        this.#newEventPresentor = null;
+        if (this.events.length === 0) {
+          this.#createListEmpty();
+        }
       }
     }
   };
