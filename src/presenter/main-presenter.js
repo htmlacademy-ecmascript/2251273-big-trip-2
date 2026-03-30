@@ -77,17 +77,13 @@ export default class MainPresenter {
         this.#uiBlocker.unblock();
       });
     } else if (actionType === USER_ACTION.ADD_EVENT) {
-      this.#eventsModel.addEvent(updateType, update).then(() => {
-        // TODO: При удачном добавлении события!
-      }).catch(() => {
+      this.#eventsModel.addEvent(updateType, update).catch(() => {
         this.#newEventPresentor.add(update);
       }).finally(() => {
         this.#uiBlocker.unblock();
       });
     } else if (actionType === USER_ACTION.DELETE_EVENT) {
-      this.#eventsModel.deleteEvent(updateType, update).then(() => {
-        // TODO: При удачном удалении события!
-      }).catch(() => {
+      this.#eventsModel.deleteEvent(updateType, update).catch(() => {
         this.#eventsPresentor.get(update.id).reset(update);
       }).finally(() => {
         this.#uiBlocker.unblock();
@@ -119,7 +115,6 @@ export default class MainPresenter {
           this.#renderAllEvents(this.events);
           this.#resetSort();
         }).catch(() => {
-          // TODO: добавить обработку!
           this.#newButtonDisabled();
           this.#deleteEventLoading();
           this.#sortPresenter.destroy();
@@ -127,8 +122,6 @@ export default class MainPresenter {
           this.#createFailedLoading();
         });
       this.#tripPresenter.update(this.#currentFilterType);
-    } else if (updateType === UPDATE_TYPE.MAJOR) {
-      // TODO: добавить обработку!
     } else if (updateType === UPDATE_TYPE.INIT) {
       this.#newButtonEnabled();
       this.#deleteEventLoading();
@@ -173,9 +166,8 @@ export default class MainPresenter {
         this.#createFailedLoading();
       });
     } catch (err) {
-      // TODO: Доработать! Добавить обработку ошибок
-    } finally {
-      // TODO: Доработать! Добавить финализацию
+      this.#deleteEventLoading();
+      this.#createFailedLoading();
     }
   }
 

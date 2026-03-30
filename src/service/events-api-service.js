@@ -10,7 +10,6 @@ export default class EventsApiService extends ApiService {
   // Получаем события
   async events() {
     return this._load({
-      // TODO: Убрать перед сдачей!
       url: 'points',
       method: METHOD_API.GET,
     })
@@ -44,7 +43,6 @@ export default class EventsApiService extends ApiService {
   // Добавляем событие
   async addEvent(event) {
     const response = await this._load({
-      // TODO: Убрать перед сдачей!
       url: 'points',
       method: METHOD_API.POST,
       body: JSON.stringify(event),

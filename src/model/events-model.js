@@ -115,11 +115,6 @@ export default class EventsModel extends Observable {
     return sortEventsByType(this.#events);
   }
 
-  // Получаем id всех событий
-  get allEventsId() {
-    return this.#events.map((item) => item.id);
-  }
-
   // Получаем общую стоимость
   get totalPrice() {
     return this.#events.reduce((acc, item) => acc + item.basePrice, 0);

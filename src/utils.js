@@ -87,7 +87,6 @@ function sortEventsByType(events, type = 'day') {
   } else if (type === 'day') {
     return events.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom)));
   }
-  // return events;
 }
 
 function generateUniqueEventId(array) {
