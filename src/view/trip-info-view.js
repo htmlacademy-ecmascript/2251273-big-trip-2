@@ -25,14 +25,15 @@ function createTripInfo({
 
   return (`
           <section class="trip-main__trip-info  trip-info">
+          ${allCities.length ? `
             <div class="trip-info__main">
               <h1 class="trip-info__title">${cutCityes(allCities)}</h1>
-              ${fisrtEventDate && lastEventDate ? `<p class="trip-info__dates">${ getFormettedDate(fisrtEventDate, DateFormat.eventDate) } &mdash; ${ getFormettedDate(lastEventDate, DateFormat.eventDate) }</p>` : ''}
+              ${fisrtEventDate && lastEventDate ? `<p class="trip-info__dates">${ getFormettedDate(fisrtEventDate, DateFormat.eventInfoDate) } &mdash; ${ getFormettedDate(lastEventDate, DateFormat.eventInfoDate) }</p>` : ''}
             </div>
 
             <p class="trip-info__cost">
               Total: &euro;&nbsp;<span class="trip-info__cost-value">${ fullPrice || 0}</span>
-            </p>
+            </p>` : ''}
           </section>
         `);
 }

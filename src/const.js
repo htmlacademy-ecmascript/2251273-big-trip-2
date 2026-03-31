@@ -14,6 +14,7 @@ const TypePoint = {
 
 const DateFormat = {
   eventDate:'MMM D',
+  eventInfoDate:'D MMM',
   eventTime:'HH:mm',
   eventGroupTime:'D/MM/YY HH:mm',
 };
@@ -50,7 +51,8 @@ const ALL_TYPES_FILTERS = [
 
 const EVENT_MODE = {
   DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING'
+  EDITING: 'EDITING',
+  CREATING: 'CREATING',
 };
 
 const USER_ACTION = {

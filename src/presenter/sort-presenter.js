@@ -16,19 +16,23 @@ export default class SortPresenter {
     this.#onSortChange = onSortChange;
   }
 
+  // Инициализация
   init() {
     this.#renderListSort();
   }
 
+  // Обновление
   update() {
     this.destroy();
     this.#renderListSort();
   }
 
+  // Удаление компонентов
   destroy() {
     remove(this.#eventSort);
   }
 
+  // Рендер сортировки
   #renderListSort() {
     this.#eventSort = new EventSortView({
       allTypesSorting: ALL_TYPES_SORTING,
@@ -37,10 +41,12 @@ export default class SortPresenter {
     render(this.#eventSort, this.#sortListContainer, RENDER_POSITION.AFTERBEGIN);
   }
 
+  // Обработка событий
   #handleSortTypeChange = (evt) => {
     this.#onSortChange({sortType: evt.target.dataset.sortType});
   };
 
+  // Получение элемента
   get element() {
     return this.#eventSort.element;
   }

@@ -41,12 +41,14 @@ export default class TripPresenter {
     this.#handleFilterChange = onFilterChange;
   }
 
+  // Инициализация
   init(currentFilterType) {
     this.#currentFilterType = currentFilterType;
     this.#renderTripInfo();
     this.#renderTripFilter();
   }
 
+  // Обновление
   update(currentFilterType) {
     this.#currentFilterType = currentFilterType;
     this.destroy();
@@ -54,6 +56,7 @@ export default class TripPresenter {
     this.#renderTripFilter();
   }
 
+  // Рендер инфо
   #renderTripInfo() {
     this.#tripInfo = new TripInfoView({
       eventsModel: this.#eventsModel,
@@ -63,6 +66,7 @@ export default class TripPresenter {
     render(this.#tripInfo, this.#tripInfoContainer, 'AFTERBEGIN');
   }
 
+  // Рендер фильтра
   #renderTripFilter() {
     this.#tripFilter = new TripFilterView({
       eventsModel: this.#eventsModel,
@@ -74,6 +78,7 @@ export default class TripPresenter {
     render(this.#tripFilter, this.#tripFilterContainer, 'BEFOREEND');
   }
 
+  // Удаление компонентов
   destroy() {
     remove(this.#tripInfo);
     remove(this.#tripFilter);

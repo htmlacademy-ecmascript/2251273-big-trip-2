@@ -136,7 +136,9 @@ export default class EventPresentor {
   // Переключение режима на редактирование
   #switchToForm() {
     replace(this.#eventEditComponent, this.#eventComponent);
-    this.#handleModeChange();
+    this.#handleModeChange({
+      mode: EVENT_MODE.EDITING,
+    });
     this.#mode = EVENT_MODE.EDITING;
   }
 

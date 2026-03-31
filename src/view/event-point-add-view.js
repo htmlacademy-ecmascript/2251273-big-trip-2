@@ -1,11 +1,10 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
-import { getFormettedDate, addOfferInArray, deleteOfferInArray, getNumberFromString } from '../utils.js';
-import { DateFormat, TypePoint } from '../const.js';
+import { addOfferInArray, deleteOfferInArray, getNumberFromString } from '../utils.js';
+import { TypePoint } from '../const.js';
 
 import flatpickr from 'flatpickr';
 import he from 'he';
-import dayjs from 'dayjs';
 
 function crateEventTypeList({ event, destinationsModel }) {
   const allCities = destinationsModel.allCities;
@@ -42,13 +41,13 @@ function crateEventTypeList({ event, destinationsModel }) {
 `);
 }
 
-function createEventDate({ eventStartDate, eventEndDate }) {
+function createEventDate() {
   return (`
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${eventStartDate}">&mdash;
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="">&mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${eventEndDate}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="">
     </div>
   `);
 }
@@ -117,8 +116,6 @@ function createEventPointAdd({
   destinationsModel
 }) {
 
-  const eventStartDate = getFormettedDate(event.dateFrom, DateFormat.eventGroupTime);
-  const eventEndDate = getFormettedDate(event.dateTo, DateFormat.eventGroupTime);
   const eventPrice = event.basePrice;
   const eventOffers = event.offers;
 
@@ -133,7 +130,7 @@ function createEventPointAdd({
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   ${crateEventTypeList({ event, destinationsModel })}
-                  ${createEventDate({ eventStartDate, eventEndDate })}
+                  ${createEventDate()}
                   ${createEventPrice({ eventPrice })}
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${event.destination && eventPrice > 0 ? '' : 'disabled'}>Save</button>
                   <button class="event__reset-btn" type="reset">Cancel</button>
@@ -181,8 +178,6 @@ export default class EventPointAddView extends AbstractStatefulView {
   }
 
   get template() {
-    this._state.dateFrom = this._state.dateFrom || dayjs().toISOString();
-    this._state.dateTo = this._state.dateTo || dayjs().add(1, 'day').toISOString();
 
     return createEventPointAdd({
       event: this._state,
@@ -194,6 +189,10 @@ export default class EventPointAddView extends AbstractStatefulView {
   _restoreHandlers() {
     const eventSaveButton = this.element.querySelector('.event__save-btn');
     const eventDeleteButton = this.element.querySelector('.event__reset-btn');
+    const eventStartTime = this.element.querySelector('#event-start-time-1');
+    const eventEndTime = this.element.querySelector('#event-end-time-1');
+
+    eventSaveButton.disabled = !this.#checkSubmitButton();
 
     this.element.querySelector('.event').addEventListener('submit', (evt) => {
       evt.preventDefault();
@@ -207,6 +206,8 @@ export default class EventPointAddView extends AbstractStatefulView {
       this.#onCancelForm();
       eventDeleteButton.disabled = true;
       eventDeleteButton.innerHTML = 'Deleting...';
+      eventStartTime.value = '';
+      eventEndTime.value = '';
     });
 
     this.element.querySelectorAll('.event__offer-checkbox').forEach((checkbox) => {
@@ -239,10 +240,9 @@ export default class EventPointAddView extends AbstractStatefulView {
 
     this.#setDateFrom();
     this.#setDateTo();
-
   }
 
-  #checkSubmitButton = () => this._state.destination && this._state.basePrice > 0;
+  #checkSubmitButton = () => this._state.destination && this._state.basePrice > 0 && this._state.dateFrom !== null && this._state.dateTo !== null;
 
   #updadeOffersEvent = (offerId, checked) => {
     if (checked) {
@@ -262,37 +262,35 @@ export default class EventPointAddView extends AbstractStatefulView {
   };
 
   #setDateFrom = () => {
-    if (this._state.dateFrom) {
-      this.#dateFrom = flatpickr(this.element.querySelector('#event-start-time-1'), {
-        enableTime: true,
-        defaultDate: this._state.dateFrom,
-        dateFormat: 'd/m/y H:i',
-        maxDate: this._state.dateTo,
-        onChange: this.#dateFromChangeHandler,
-      });
-    }
+    this.#dateFrom = flatpickr(this.element.querySelector('#event-start-time-1'), {
+      enableTime: true,
+      defaultDate: this._state.dateFrom || null,
+      dateFormat: 'd/m/y H:i',
+      maxDate: this._state.dateTo || null,
+      onChange: this.#dateFromChangeHandler,
+    });
   };
 
   #setDateTo = () => {
-    if (this._state.dateTo) {
-      this.#dateTo = flatpickr(this.element.querySelector('#event-end-time-1'), {
-        enableTime: true,
-        defaultDate: this._state.dateTo,
-        dateFormat: 'd/m/y H:i',
-        minDate: this._state.dateFrom,
-        onChange: this.#dateToChangeHandler,
-      });
-    }
+    this.#dateTo = flatpickr(this.element.querySelector('#event-end-time-1'), {
+      enableTime: true,
+      defaultDate: this._state.dateTo || null,
+      dateFormat: 'd/m/y H:i',
+      minDate: this._state.dateFrom,
+      onChange: this.#dateToChangeHandler,
+    });
   };
 
   #dateFromChangeHandler = (selectedDates) => {
-    this._state.dateFrom = selectedDates[0].toISOString();
     this.#dateTo.set('minDate', this._state.dateFrom);
+    this._state.dateFrom = selectedDates[0].toISOString();
+    this.#updateState();
   };
 
   #dateToChangeHandler = (selectedDates) => {
-    this._state.dateTo = selectedDates[0].toISOString();
     this.#dateFrom.set('maxDate', this._state.dateTo);
+    this._state.dateTo = selectedDates[0].toISOString();
+    this.#updateState();
   };
 
 }
