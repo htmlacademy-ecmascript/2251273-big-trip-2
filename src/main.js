@@ -8,7 +8,7 @@ import DestinationsModel from './model/destinations-model.js';
 import EventsApiService from './service/events-api-service.js';
 import OffersApiService from './service/offers-api-service.js';
 import DestinationsApiService from './service/destinations-api-service.js';
-//
+// Const
 import { AUTHORIZATION, URL_API } from './const.js';
 // Trip container
 const pageHeaderContainer = document.querySelector('.page-header__container');

@@ -166,8 +166,7 @@ export default class MainPresenter {
         this.#createFailedLoading();
       });
     } catch (err) {
-      this.#deleteEventLoading();
-      this.#createFailedLoading();
+      throw new Error('Can\'t init main presenter');
     }
   }
 

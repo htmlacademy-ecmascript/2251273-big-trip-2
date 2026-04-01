@@ -1,5 +1,3 @@
-const MAX_POINTS = 3;
-
 const TypePoint = {
   'taxi': 'Taxi',
   'bus': 'Bus',
@@ -108,7 +106,6 @@ const TIME_LIMIT = {
 };
 
 export {
-  MAX_POINTS,
   TypePoint,
   DateFormat,
   ALL_TYPES_SORTING,

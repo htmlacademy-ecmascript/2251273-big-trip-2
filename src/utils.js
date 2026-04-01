@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Returns a formatted date string based on the given date and format.
@@ -33,16 +32,6 @@ function getDurationTime (dateStart, dateEnd) {
 }
 
 /**
- * Returns a random integer between min (inclusive) and max (inclusive)
- * @param {number} [min=1] - Minimum value (inclusive)
- * @param {number} [max=100] - Maximum value (inclusive)
- * @returns {number} Random integer
- */
-function getRandomInt(min = 1, max = 100) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-/**
  * Checks if the given event corresponds to the Escape key press.
  * @param {object} evt - Event object.
  * @returns {boolean} True if the event corresponds to the Escape key press, false otherwise.
@@ -52,22 +41,11 @@ function isEscapeKey(evt) {
 }
 
 /**
- * Updates an event in an array by replacing the old event with the new one.
- * If the event with the given id is not found, the array is returned unchanged.
- * @param {array} array - Array of events to update.
- * @param {object} element - New event to replace the old one.
- * @returns {array} Updated array of events.
+ * Adds a given element to the array if it is not already present.
+ * @param {Array} array - Array to which the element is to be added.
+ * @param {*} element - Element to be added to the array.
+ * @returns {Array} New array with the added element if it was not already present.
  */
-function updateEventInArray(array, element) {
-  return array.map((item) => item.id === element.id ? element : item);
-}
-
-
-function deleteEventInArray(array, element) {
-  return array.filter((item) => item.id !== element.id);
-}
-
-
 function addOfferInArray(array, element) {
   if (array.includes(element)) {
     return array;
@@ -75,10 +53,22 @@ function addOfferInArray(array, element) {
   return [...array, element];
 }
 
+/**
+ * Deletes a given element from the array if it is present.
+ * @param {Array} array - Array from which the element is to be deleted.
+ * @param {*} element - Element to be deleted from the array.
+ * @returns {Array} New array with the deleted element if it was present.
+ */
 function deleteOfferInArray(array, element) {
   return array.filter((item) => item !== element);
 }
 
+/**
+ * Sorts an array of events based on the given type.
+ * @param {Array<Event>} events - Array of events to be sorted.
+ * @param {string} type - Type of sorting. Can be one of 'day', 'time', 'price'.
+ * @returns {Array<Event>} Sorted array of events.
+ */
 function sortEventsByType(events, type = 'day') {
   if (type === 'price') {
     return events.sort((a, b) => b.basePrice - a.basePrice);
@@ -89,19 +79,39 @@ function sortEventsByType(events, type = 'day') {
   }
 }
 
-function generateUniqueEventId(array) {
-  const id = uuidv4();
-  return array.includes(id) ? generateUniqueEventId(array) : id;
-}
-
+/**
+ * Returns the first event from the given array of events.
+ * Events are sorted by their start date in ascending order.
+ * @param {Array<Event>} events - Array of events to be sorted.
+ * @returns {Event} First event from the sorted array.
+ */
 function getFirstEvent(events) {
   return events.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))).at(0);
 }
 
+/**
+ * Returns the last event from the given array of events.
+ * Events are sorted by their start date in descending order.
+ * @param {Array<Event>} events - Array of events to be sorted.
+ * @returns {Event} Last event from the sorted array.
+ */
 function getLastEvent(events) {
   return events.sort((a, b) => dayjs(a.dateFrom).diff(dayjs(b.dateFrom))).at(0);
 }
 
+
+/**
+ * Cuts an array of cities to a shorter string if the array
+ * is longer than 3 elements.
+ * If the array has more than 3 elements, it will return a string
+ * with the first and last elements of the array, separated by
+ * ' &mdash; ' and '...'.
+ * If the array has 2 elements, it will return a string with the
+ * two elements separated by ' &mdash; '.
+ * If the array has 1 element, it will return the array as is.
+ * @param {Array<string>} array - Array of cities to be cut.
+ * @returns {string} Shorter string representation of the array.
+ */
 function cutCityes(array) {
   if (array.length > 3) {
     return [array.at(0),'...', array.at(-1)].join(' &mdash; ');
@@ -111,6 +121,12 @@ function cutCityes(array) {
   return array;
 }
 
+/**
+ * Filters an array of events based on the given type.
+ * @param {Array<Event>} array - Array of events to be filtered.
+ * @param {string} type - Type of filtering. Can be one of 'future', 'present', 'past'.
+ * @returns {Array<Event>} Filtered array of events.
+ */
 function filterEventsByType(array, type) {
   const currentDate = dayjs();
   if (type === 'future') {
@@ -123,6 +139,13 @@ function filterEventsByType(array, type) {
   return array;
 }
 
+/**
+ * Returns a number from the given string.
+ * All non-digit characters are removed from the string and the remaining
+ * characters are parsed as a number.
+ * @param {string} string - String from which a number is to be extracted.
+ * @returns {number} Number extracted from the string.
+ */
 function getNumberFromString(string) {
   return Number(string.replace(/[^0-9]/g, ''));
 }
@@ -130,14 +153,10 @@ function getNumberFromString(string) {
 export {
   getFormettedDate,
   getDurationTime,
-  getRandomInt,
   isEscapeKey,
-  updateEventInArray,
-  deleteEventInArray,
   addOfferInArray,
   deleteOfferInArray,
   sortEventsByType,
-  generateUniqueEventId,
   getFirstEvent,
   getLastEvent,
   cutCityes,
