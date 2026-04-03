@@ -12,6 +12,16 @@ export default class EventsModel extends Observable {
     this.#eventApiService = eventApiService;
   }
 
+  // Получаем все события
+  get allEvents() {
+    return sortEventsByType(this.#events);
+  }
+
+  // Получаем общую стоимость
+  get totalPrice() {
+    return this.#events.reduce((acc, item) => acc + item.basePrice, 0);
+  }
+
   // Инициализируем модель
   async init() {
     try {
@@ -107,17 +117,6 @@ export default class EventsModel extends Observable {
     } catch (err) {
       throw new Error('Can\'t delete event');
     }
-
-  }
-
-  // Получаем все события
-  get allEvents() {
-    return sortEventsByType(this.#events);
-  }
-
-  // Получаем общую стоимость
-  get totalPrice() {
-    return this.#events.reduce((acc, item) => acc + item.basePrice, 0);
   }
 
 }

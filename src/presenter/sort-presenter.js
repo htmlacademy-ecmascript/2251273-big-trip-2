@@ -16,6 +16,11 @@ export default class SortPresenter {
     this.#onSortChange = onSortChange;
   }
 
+  // Получение элемента
+  get element() {
+    return this.#eventSort.element;
+  }
+
   // Инициализация
   init() {
     this.#renderListSort();
@@ -45,10 +50,5 @@ export default class SortPresenter {
   #handleSortTypeChange = (evt) => {
     this.#onSortChange({sortType: evt.target.dataset.sortType});
   };
-
-  // Получение элемента
-  get element() {
-    return this.#eventSort.element;
-  }
 
 }

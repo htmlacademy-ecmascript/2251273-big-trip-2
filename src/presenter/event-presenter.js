@@ -3,7 +3,7 @@ import EventPointEditView from '../view/event-point-edit-view.js';
 import EventPointAddView from '../view/event-point-add-view.js';
 
 import { remove, render, replace } from '../framework/render.js';
-import { EVENT_MODE, USER_ACTION, UPDATE_TYPE, NEW_EVENT, RENDER_POSITION } from '../const.js';
+import { EVENT_MODE, USER_ACTION, UPDATE_TYPE, NEW_EVENT, RENDER_POSITION, TIME_OUT } from '../const.js';
 
 export default class EventPresentor {
   // Containers
@@ -41,6 +41,15 @@ export default class EventPresentor {
     // Handlers
     this.#handleEventChange = onDataChange;
     this.#handleModeChange = onModeChange;
+  }
+
+  // Получение компонентов
+  get component () {
+    return {
+      event: this.#event,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel
+    };
   }
 
   // Инициализация события
@@ -84,7 +93,7 @@ export default class EventPresentor {
     setTimeout(() => {
       this.#eventComponent.element.querySelector('.event').classList.remove('shake');
       this.#eventEditComponent.element.querySelector('.event--edit').classList.remove('shake');
-    }, 1000);
+    }, TIME_OUT);
   }
 
   // Добавление события
@@ -225,15 +234,6 @@ export default class EventPresentor {
     remove(this.#eventComponent);
     remove(this.#eventEditComponent);
     remove(this.#eventAddComponent);
-  }
-
-  // Получение компонентов
-  get component () {
-    return {
-      event: this.#event,
-      offersModel: this.#offersModel,
-      destinationsModel: this.#destinationsModel
-    };
   }
 
 }

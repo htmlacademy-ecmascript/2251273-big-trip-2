@@ -67,6 +67,14 @@ export default class MainPresenter {
     this.#eventsModel.addObserver(this.#handleModelEvent);
   }
 
+  // Получаем события после сортировки и фильтра
+  get events() {
+    return filterEventsByType(
+      sortEventsByType(
+        this.#eventsModel.allEvents, this.#currentSortType),
+      this.#currentFilterType);
+  }
+
   #handleViewAction = ({ actionType, updateType, update }) => {
     this.#uiBlocker.block();
     if (actionType === USER_ACTION.UPDATE_EVENT) {
@@ -359,13 +367,5 @@ export default class MainPresenter {
       }
     }
   };
-
-  // Получаем события после сортировки и фильтра
-  get events() {
-    return filterEventsByType(
-      sortEventsByType(
-        this.#eventsModel.allEvents, this.#currentSortType),
-      this.#currentFilterType);
-  }
 
 }
