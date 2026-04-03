@@ -105,6 +105,8 @@ const TIME_LIMIT = {
   UPPER_LIMIT: 1000
 };
 
+const TIME_OUT = 1000;
+
 export {
   TypePoint,
   DateFormat,
@@ -120,4 +122,5 @@ export {
   AUTHORIZATION,
   URL_API,
   TIME_LIMIT,
+  TIME_OUT,
 };

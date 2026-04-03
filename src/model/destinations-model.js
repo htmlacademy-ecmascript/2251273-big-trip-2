@@ -11,6 +11,11 @@ export default class DestinationsModel extends Observable {
     this.#destinationsApiService = destinationsApiService;
   }
 
+  // Получаем все города
+  get allCities() {
+    return this.#destinations.map((item) => item.name);
+  }
+
   // Инициализируем модель
   async init() {
     try {
@@ -31,8 +36,4 @@ export default class DestinationsModel extends Observable {
     return this.#destinations.find((destination) => destination?.name === name)?.id || null;
   }
 
-  // Получаем все города
-  get allCities() {
-    return this.#destinations.map((item) => item.name);
-  }
 }

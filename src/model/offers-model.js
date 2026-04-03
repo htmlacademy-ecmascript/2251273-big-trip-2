@@ -11,6 +11,11 @@ export default class OffersModel extends Observable {
     this.#offersApiService = offersApiService;
   }
 
+  // получаем все офферы
+  get allOffers() {
+    return this.#offers || [];
+  }
+
   // Инициализируем модель
   async init() {
     try {
@@ -29,11 +34,6 @@ export default class OffersModel extends Observable {
   // получаем цену оффера
   getPriceOffer(type, id) {
     return this.#offers.find((offer) => offer.type === type).offers.find((offer) => offer.id === id).price;
-  }
-
-  // получаем все офферы
-  get allOffers() {
-    return this.#offers || [];
   }
 
 }
