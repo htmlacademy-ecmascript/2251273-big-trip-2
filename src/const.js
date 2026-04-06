@@ -96,7 +96,7 @@ const METHOD_API = {
   DELETE: 'DELETE',
 };
 
-const AUTHORIZATION = 'Basic Zm9vYmFyOjEyMzQ1Nj67';
+const AUTHORIZATION = 'Basic Zm9vYmFyOjEyMzQ1Nj6';
 
 const URL_API = 'https://22.objects.htmlacademy.pro/big-trip';
 
@@ -106,6 +106,11 @@ const TIME_LIMIT = {
 };
 
 const TIME_OUT = 1000;
+
+const TIME_CONST = {
+  MINUTES_IN_HOUR: 60,
+  HOURS_IN_DAY: 24
+};
 
 export {
   TypePoint,
@@ -123,4 +128,5 @@ export {
   URL_API,
   TIME_LIMIT,
   TIME_OUT,
+  TIME_CONST
 };
