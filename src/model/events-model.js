@@ -72,11 +72,6 @@ export default class EventsModel extends Observable {
     return adaptedEvent;
   }
 
-  // Получаем события по id
-  getEventById(id) {
-    return this.#events.find((event) => event.id === id) || null;
-  }
-
   // Обновляем событие
   async updateEvent(updateType, event) {
     try {

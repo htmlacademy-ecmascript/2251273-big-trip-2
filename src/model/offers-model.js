@@ -11,11 +11,6 @@ export default class OffersModel extends Observable {
     this.#offersApiService = offersApiService;
   }
 
-  // получаем все офферы
-  get allOffers() {
-    return this.#offers || [];
-  }
-
   // Инициализируем модель
   async init() {
     try {

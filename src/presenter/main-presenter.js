@@ -97,6 +97,7 @@ export default class MainPresenter {
         this.#uiBlocker.unblock();
       });
     } else if (actionType === USER_ACTION.CANSEL_EVENT) {
+      this.#clearEvents();
       this.#renderAllEvents(this.events);
       this.#newButtonEnabled();
       this.#newEventPresentor.destroy();

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { TIME_CONST } from './const';
 
 /**
  * Returns a formatted date string based on the given date and format.
@@ -20,12 +21,12 @@ function getFormettedDate(date, format) {
 function getDurationTime (dateStart, dateEnd) {
   const diff = dayjs(dateEnd).diff(dateStart, 'minute');
 
-  let days = Math.floor(diff / (60 * 24));
-  let hours = Math.floor(diff / 60);
-  let minutes = Math.floor(diff % 60);
+  let days = Math.floor(diff / (TIME_CONST.MINUTES_IN_HOUR * TIME_CONST.HOURS_IN_DAY));
+  let hours = Math.floor(diff / TIME_CONST.MINUTES_IN_HOUR);
+  let minutes = Math.floor(diff % TIME_CONST.MINUTES_IN_HOUR);
 
   days = days > 0 ? `${String(days).padStart(2, '0')}D` : '';
-  hours = hours % 24 === 0 ? '00H' : `${String(hours % 24).padStart(2, '0')}H`;
+  hours = hours % TIME_CONST.HOURS_IN_DAY === 0 ? '00H' : `${String(hours % TIME_CONST.HOURS_IN_DAY).padStart(2, '0')}H`;
   minutes = `${String(minutes).padStart(2, '0')}M`;
 
   return`${days} ${days !== '' || hours !== '' ? hours : ''} ${minutes}`;
@@ -109,45 +110,45 @@ function getLastEvent(events) {
  * If the array has 2 elements, it will return a string with the
  * two elements separated by ' &mdash; '.
  * If the array has 1 element, it will return the array as is.
- * @param {Array<string>} array - Array of cities to be cut.
+ * @param {cityes} array - Array of cities to be cut.
  * @returns {string} Shorter string representation of the array.
  */
-function cutCityes(array) {
-  if (array.length > 3) {
-    return [array.at(0),'...', array.at(-1)].join(' &mdash; ');
-  } else if (array.length > 1) {
-    return array.join(' &mdash; ');
+function cutCityes(cityes) {
+  if (cityes.length > 3) {
+    return [cityes.at(0),'...', cityes.at(-1)].join(' &mdash; ');
+  } else if (cityes.length > 1) {
+    return cityes.join(' &mdash; ');
   }
-  return array;
+  return cityes;
 }
 
 /**
  * Filters an array of events based on the given type.
- * @param {Array<Event>} array - Array of events to be filtered.
+ * @param {events} array - Array of events to be filtered.
  * @param {string} type - Type of filtering. Can be one of 'future', 'present', 'past'.
  * @returns {Array<Event>} Filtered array of events.
  */
-function filterEventsByType(array, type) {
+function filterEventsByType(events, type) {
   const currentDate = dayjs();
   if (type === 'future') {
-    return array.filter((item) => dayjs(item.dateFrom).isAfter(currentDate));
+    return events.filter((item) => dayjs(item.dateFrom).isAfter(currentDate));
   } else if (type === 'present') {
-    return array.filter((item) => dayjs(item.dateFrom).isBefore(currentDate) && dayjs(item.dateTo).isAfter(currentDate));
+    return events.filter((item) => dayjs(item.dateFrom).isBefore(currentDate) && dayjs(item.dateTo).isAfter(currentDate));
   } else if (type === 'past') {
-    return array.filter((item) => dayjs(item.dateTo).isBefore(currentDate));
+    return events.filter((item) => dayjs(item.dateTo).isBefore(currentDate));
   }
-  return array;
+  return events;
 }
 
 /**
  * Returns a number from the given string.
  * All non-digit characters are removed from the string and the remaining
  * characters are parsed as a number.
- * @param {string} string - String from which a number is to be extracted.
+ * @param {inputPrice} string - String from which a number is to be extracted.
  * @returns {number} Number extracted from the string.
  */
-function getNumberFromString(string) {
-  return Number(string.replace(/[^0-9]/g, ''));
+function getNumberFromString(inputPrice) {
+  return Number(inputPrice.replace(/[^0-9]/g, ''));
 }
 
 export {
